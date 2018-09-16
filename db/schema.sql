@@ -1,5 +1,6 @@
 /**************************Ajita*******************************/
-
+DROP DATABASE IF EXISTS code_mason_db;
+CREATE DATABASE code_mason_db;
 
 
 
