@@ -12,6 +12,100 @@
 /**************************Ajita*******************************/
 
 /**************************Taylor*******************************/
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #F85E55;
+}
+
+.title {
+    margin-top: 20px;
+    margin-left: 50px;
+}
+.uk-button {
+    border:0px;
+    font-family: 'Roboto', sans-serif;
+    color: white;
+}
+
+.nav-search {
+    margin-top: 20px;
+}
+
+#search-submit {
+    background-color: black;
+}
+
+h1 {
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    padding-top:10px;
+}
+
+.left-nav {
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+.login {
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+.logout {
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+.main-content {
+    background-color: #E2564E;
+}
+
+.side-menu {
+    background-color: white;
+    padding: 25px 25px 25px 25px;
+    margin: 35px 25px 25px 50px;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.1)
+}
+
+.snippets-container {
+    margin: 35px 50px 25px 25px;
+    text-align: center;
+}
+
+.uk-card {
+    display: inline-block;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+}
+
+.uk-card-body {
+    color: white;
+    background-color: black;
+}
+
+/* #create-account-modal {
+    background-color: #F85E55;
+    color: white;
+} */
+
+#create-account-submit {
+    background-color: black;
+}
+
+.uk-form-stacked {
+    margin: 5px;
+}
+
+#snippet-submit {
+    background-color: black;
+}
+
+.uk-modal-dialog { 
+    background: #F85E55;
+    color: white;
+}
+
 
 
 
