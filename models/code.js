@@ -1,13 +1,21 @@
 /**************************Ajita*******************************/
 module.exports = function(sequelize, DataTypes) {
     var Code = sequelize.define("Code", {
-      name: {
+      title: {
           type: DataTypes.STRING,
           allowNull: false,
           validate :
                     {
                         notEmpty: true
                     }
+      },
+      description: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate :
+                  {
+                      notEmpty: true
+                  }
       },
       text: {
           type: DataTypes.TEXT('long'),

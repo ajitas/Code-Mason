@@ -69,7 +69,7 @@ app.get("/codes/:userID", function(req,res){
 });
 
 //get 5 recent modified codes of a particular user
-app.get("/codes/:userID", function(req,res){
+app.get("/codes/latest/:userID", function(req,res){
     db.Code.findAll({
         where: {
             UserId:req.params.userID
@@ -84,15 +84,14 @@ app.get("/codes/:userID", function(req,res){
     });
 });
 
-//get all codes that have a particular :tag in its tag
-app.get("/search/codes/:tag", function(req,res){
+//get 5 most liked codes of a particular user
+app.get("/codes/liked/:userID", function(req,res){
     db.Code.findAll({
-        include : [{
-            model: db.Tag,
-            where: {
-              tagname: req.params.tag
-            }
-        }]
+        where: {
+            UserId:req.params.userID
+        },
+        order: [['liked', 'DESC']],
+        limit: 5
     }).then(function(data){
         var resObj = {
             codes: data
@@ -100,6 +99,68 @@ app.get("/search/codes/:tag", function(req,res){
         res.json(resObj);
     });
 });
+
+//get all codes that have a particular keyword in its tag or title
+app.get("/search/codes/:keyword", function(req,res){
+    db.Code.findAll({
+        include : [{
+            model: db.Tag,
+            where: {
+              tagname: req.params.keyword
+            }
+        }]
+    }).then(function(data){
+        var resObj = {
+            codes: data
+        };
+        db.Code.findAll({
+            where:
+            {
+                title:
+                {
+                    [op.like]:'%'+req.params.keyword+'%'
+                }
+            }
+        }).then(function(data2){
+            resObj["codeTitle"] = data2;
+            res.json(resObj);
+        })
+    });
+});
+
+//get a user's codes that have a particular keyword in its tag or its title
+app.get("/search/codes/:keyword/:userID", function(req,res){
+    var op = Sequelize.op;
+    db.Code.findAll({
+        include : [{
+            model: db.Tag,
+            where: {
+              tagname: req.params.keyword
+            }
+        }],
+        where :
+        {
+            id:req.params.userID
+        }
+    }).then(function(data){
+        var resObj = {
+            codeTag: data
+        };
+        db.Code.findAll({
+            where:
+            {
+                id:req.params.userID,
+                title:
+                {
+                    [op.like]:'%'+req.params.keyword+'%'
+                }
+            }
+        }).then(function(data2){
+            resObj["codeTitle"] = data2;
+            res.json(resObj);
+        })
+    });
+}); 
 
 //get all codes for a particular language
 app.get("/search/codes/:language", function(req,res){
@@ -132,27 +193,6 @@ app.get("/search/codes/:language/:userID", function(req,res){
     });
 });
 
-//get a user's codes that have a particular keyword in its tag
-app.get("/search/codes/:tag/:userID", function(req,res){
-    db.Code.findAll({
-        include : [{
-            model: db.Tag,
-            where: {
-              tagname: req.params.tag
-            }
-        }],
-        where :
-        {
-            id:req.params.userID
-        }
-    }).then(function(data){
-        var resObj = {
-            codes: data
-        };
-        res.json(resObj);
-    });
-}); 
-
 //add new comment
 app.post("/comments", function(req,res){
     db.Comment.create({
@@ -167,7 +207,8 @@ app.post("/comments", function(req,res){
 //add new code
 app.post("/codes", function(req,res){
     db.Code.create({
-        name: req.body.name,
+        title: req.body.title,
+        description: req.body.description,
         text: req.body.text,
         public: req.body.public,
         likes: req.body.likes,
@@ -202,7 +243,8 @@ app.post("/users", function(req,res){
 //lets user update his code
 app.put("/codes/:codeID", function(req, res) {
     db.Code.update({
-        name: req.body.name,
+        title: req.body.title,
+        description: req.body.description,
         text: req.body.text,
         public: req.body.public,
         likes: req.body.likes,
