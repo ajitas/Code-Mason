@@ -1,35 +1,34 @@
 /**************************Ajita*******************************/
 module.exports = function(sequelize, DataTypes) {
-    var User = sequelize.define("User", {
-      name: {
+    var Tag = sequelize.define("Tag", {
+      tagname: {
           type: DataTypes.STRING,
           allowNull: false,
           validate :
                     {
                         notEmpty: true
                     }
-      },
-      email : {
-          type: DataTypes.STRING,
-          allowNull = false,
-          validate :
-                {
-                    isEmail: true
-                }
       }
     });
 
-    User.associate = function (models) {
-        models.User.hasMany(models.Code, {
-            onDelete: "cascade"
-        });
-        models.User.hasMany(models.Comment, {
-            onDelete: "cascade"
+    Tag.associate = function (models) {
+        models.Tag.belongsTo(models.Code, {
+          foreignKey: {
+            allowNull: false
+          }
         });
     }
 
-    return User;
+    return Tag;
 };
+
+
+
+
+
+
+
+
 
 /**************************Ajita*******************************/
 

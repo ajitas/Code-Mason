@@ -24,11 +24,15 @@ module.exports = function(sequelize, DataTypes) {
       },
       likes: {
           type: DataTypes.INTEGER,
-          deafultValue:0,
+          deafultValue:0
       },
       dislikes: {
           type: DataTypes.INTEGER,
-          deafultValue:0,
+          deafultValue:0
+      },
+      language: {
+          type: DataTypes.STRING,
+          allowNull : false
       }
     });
 
@@ -39,10 +43,10 @@ module.exports = function(sequelize, DataTypes) {
           }
         });
         models.Code.hasMany(models.Comment, {
-            onDelete: "cascade",
-            foreignKey: {
-              allowNull: false
-            }
+            onDelete: "cascade"
+        });
+        models.Code.hasMany(models.Tag, {
+            onDelete: "cascade"
         });
     }
 
