@@ -103,6 +103,20 @@ app.get("/codes/liked/:userID", function(req,res){
 //get all codes that have a particular keyword in its tag or title
 app.get("/search/codes/:keyword", function(req,res){
     db.Code.findAll({
+        where: {
+            $or: [
+                {'$db.Code.title$' : 
+                                {
+                                    $like: '%'+req.params.keyword+'%'
+                                }
+                },
+                {'$db.Tag.tagname$' :
+                                 {
+                                    $like: '%'+req.params.keyword+'%'
+                                 }
+                }
+            ]
+        },
         include : [{
             model: db.Tag,
             where: {
@@ -113,53 +127,47 @@ app.get("/search/codes/:keyword", function(req,res){
         var resObj = {
             codes: data
         };
-        db.Code.findAll({
-            where:
-            {
-                title:
-                {
-                    [op.like]:'%'+req.params.keyword+'%'
-                }
-            }
-        }).then(function(data2){
-            resObj["codeTitle"] = data2;
-            res.json(resObj);
-        })
-    });
+        res.json(resObj);
+    })
 });
+
 
 //get a user's codes that have a particular keyword in its tag or its title
 app.get("/search/codes/:keyword/:userID", function(req,res){
-    var op = Sequelize.op;
     db.Code.findAll({
+        where: {
+            $and: [
+                   {
+                        UserId: req.params.userID
+                   },
+                   {
+                        $or: [
+                            {'$db.Code.title$' : 
+                                            {
+                                                $like: '%'+req.params.keyword+'%'
+                                            }
+                            },
+                            {'$db.Tag.tagname$' :
+                                            {
+                                                $like: '%'+req.params.keyword+'%'
+                                            }
+                            }
+                        ]
+                   }
+            ]
+        },
         include : [{
             model: db.Tag,
             where: {
               tagname: req.params.keyword
             }
-        }],
-        where :
-        {
-            id:req.params.userID
-        }
+        }]
     }).then(function(data){
         var resObj = {
-            codeTag: data
+            codes: data
         };
-        db.Code.findAll({
-            where:
-            {
-                id:req.params.userID,
-                title:
-                {
-                    [op.like]:'%'+req.params.keyword+'%'
-                }
-            }
-        }).then(function(data2){
-            resObj["codeTitle"] = data2;
-            res.json(resObj);
-        })
-    });
+        res.json(resObj);
+    })
 }); 
 
 //get all codes for a particular language
