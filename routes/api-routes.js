@@ -22,13 +22,14 @@ app.get("/", function(req, res) {
         var resObj = {
             codes: data
         };
+        console.log(data);
         res.json(resObj);
     });
 });
 
 //get all comments of a particular code
-app.get("/comments/:codeID", function(req,res){
-    db.Comment.finalAll({
+app.get("/comments/code/:codeID", function(req,res){
+    db.Comment.findAll({
         where: {
             CodeId:req.params.codeID
         }
@@ -41,21 +42,22 @@ app.get("/comments/:codeID", function(req,res){
 });
 
 //get a particular code
-app.get("/codes/:codeID", function(req,res){
+app.get("/codes/code/:codeID", function(req,res){
     db.Code.findOne({
         where: {
-            CodeId:req.params.codeID
+            id:req.params.codeID
         }
     }).then(function(data){
         var resObj = {
             code: data
         };
+        console.log(data.text);
         res.json(resObj);
     });
 });
 
 //get all codes of a particular user
-app.get("/codes/:userID", function(req,res){
+app.get("/codes/user/:userID", function(req,res){
     db.Code.findAll({
         where: {
             UserId:req.params.userID
@@ -69,7 +71,7 @@ app.get("/codes/:userID", function(req,res){
 });
 
 //get 5 recent modified codes of a particular user
-app.get("/codes/latest/:userID", function(req,res){
+app.get("/codes/latest/user/:userID", function(req,res){
     db.Code.findAll({
         where: {
             UserId:req.params.userID
@@ -85,12 +87,12 @@ app.get("/codes/latest/:userID", function(req,res){
 });
 
 //get 5 most liked codes of a particular user
-app.get("/codes/liked/:userID", function(req,res){
+app.get("/codes/liked/user/:userID", function(req,res){
     db.Code.findAll({
         where: {
             UserId:req.params.userID
         },
-        order: [['liked', 'DESC']],
+        order: [['likes', 'DESC']],
         limit: 5
     }).then(function(data){
         var resObj = {
@@ -101,28 +103,26 @@ app.get("/codes/liked/:userID", function(req,res){
 });
 
 //get all codes that have a particular keyword in its tag or title
-app.get("/search/codes/:keyword", function(req,res){
+app.get("/search/codes/word/:keyword", function(req,res){
     db.Code.findAll({
+        include : [{
+            model: db.Tag,
+            as :'Tags'
+        }],
         where: {
             $or: [
-                {'$db.Code.title$' : 
+                {title : 
                                 {
                                     $like: '%'+req.params.keyword+'%'
                                 }
                 },
-                {'$db.Tag.tagname$' :
+                {'$Tags.tagname$' :
                                  {
                                     $like: '%'+req.params.keyword+'%'
                                  }
                 }
             ]
-        },
-        include : [{
-            model: db.Tag,
-            where: {
-              tagname: req.params.keyword
-            }
-        }]
+        }
     }).then(function(data){
         var resObj = {
             codes: data
@@ -133,7 +133,7 @@ app.get("/search/codes/:keyword", function(req,res){
 
 
 //get a user's codes that have a particular keyword in its tag or its title
-app.get("/search/codes/:keyword/:userID", function(req,res){
+app.get("/search/codes/user/:userID/word/:keyword", function(req,res){
     db.Code.findAll({
         where: {
             $and: [
@@ -142,12 +142,12 @@ app.get("/search/codes/:keyword/:userID", function(req,res){
                    },
                    {
                         $or: [
-                            {'$db.Code.title$' : 
+                            {title : 
                                             {
                                                 $like: '%'+req.params.keyword+'%'
                                             }
                             },
-                            {'$db.Tag.tagname$' :
+                            {'$Tags.tagname$' :
                                             {
                                                 $like: '%'+req.params.keyword+'%'
                                             }
@@ -158,20 +158,19 @@ app.get("/search/codes/:keyword/:userID", function(req,res){
         },
         include : [{
             model: db.Tag,
-            where: {
-              tagname: req.params.keyword
-            }
+            as :'Tags'
         }]
     }).then(function(data){
         var resObj = {
             codes: data
         };
+        console.log(data);
         res.json(resObj);
     })
 }); 
 
 //get all codes for a particular language
-app.get("/search/codes/:language", function(req,res){
+app.get("/search/codes/language/:language", function(req,res){
     db.Code.findAll({
         where :
         {
@@ -186,7 +185,7 @@ app.get("/search/codes/:language", function(req,res){
 });
 
 //get all codes for a particular language for a particular user
-app.get("/search/codes/:language/:userID", function(req,res){
+app.get("/search/codes/language/:language/user/:userID", function(req,res){
     db.Code.findAll({
         where :
         {
@@ -249,7 +248,7 @@ app.post("/users", function(req,res){
 });
 
 //lets user update his code
-app.put("/codes/:codeID", function(req, res) {
+app.put("/codes/code/:codeID", function(req, res) {
     db.Code.update({
         title: req.body.title,
         description: req.body.description,
@@ -274,7 +273,7 @@ app.put("/codes/:codeID", function(req, res) {
   });
 
 //lets user delete his code 
-app.delete("/codes/:codeID", function(req,res){
+app.delete("/codes/code/:codeID", function(req,res){
     db.Code.destroy({
         where:
         {
@@ -291,9 +290,11 @@ app.delete("/codes/:codeID", function(req,res){
 }) 
 
 //deletes all tags related to a code
-app.delete("/tags/:CodeID", function(req,res){
+app.delete("/tags/code/:CodeID", function(req,res){
     db.Tag.destroy({
-        CodeId : req.params.codeID
+        where:{
+            CodeId : req.params.codeID
+        }
     }).then(function(data){
         res.json({ id: data.insertId });
     })
