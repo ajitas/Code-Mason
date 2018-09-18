@@ -167,6 +167,7 @@ function onSignIn(googleUser) {
       $.post("/users", {name: name, email: email}, function(res){
         //set session storage with user id
         sessionStorage.setItem("userID", res.id);
+        window.location.reload();
       });
     }
   });
