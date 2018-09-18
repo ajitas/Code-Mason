@@ -61,13 +61,22 @@ app.get("/comments/code/:codeID", function(req,res){
     });
 });
 
-//get all languages of a particular code
+//get all languages of a particular user
 app.get("/languages/user/:userID", function(req,res){
     db.Code.findAll({
         attributes :[[db.Sequelize.fn('DISTINCT', db.Sequelize.col('language')) ,'language']],
         where: {
             UserId:req.params.userID
         }
+    }).then(function(data){
+        res.json(data);
+    });
+});
+
+//get all languages of all users
+app.get("/languages", function(req,res){
+    db.Code.findAll({
+        attributes :[[db.Sequelize.fn('DISTINCT', db.Sequelize.col('language')) ,'language']],
     }).then(function(data){
         res.json(data);
     });
