@@ -149,8 +149,6 @@ $("#snippet-submit").on("click", function(){
   });
 });
 
-var isSignedIn = false;
-
 //google sign in function. Runs when a user signes up/in and when a user is already signed in
 function onSignIn(googleUser) {
   //user data from google sign in
