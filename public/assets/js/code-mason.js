@@ -130,7 +130,7 @@ $("#snippet-submit").on("click", function(){
   tags = tags.split(",");
 
   //query api to create new code snippet entry
-  $.post("/api/codes", newSnippet, function(res){
+  $.post("/codes", newSnippet, function(res){
     //new code snippet id returned from query
     var codeID = res.id;
 
@@ -142,7 +142,7 @@ $("#snippet-submit").on("click", function(){
         codeID: codeID
       };
       //send query to enter new tag
-      $.post("/api/tags", tag, function(){
+      $.post("/tags", tag, function(){
 
       });
     }
@@ -157,7 +157,7 @@ function onSignIn(googleUser) {
   var email = profile.getEmail();
 
   //get user id
-  $.get("/api/users/" + email, function(res){
+  $.get("/users/" + email, function(res){
     if (res.id) {
       //set session storage with user id
       sessionStorage.setItem("userID", res.id);
