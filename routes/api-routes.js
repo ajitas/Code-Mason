@@ -13,13 +13,39 @@ var db = require("../models");
 // =============================================================
 module.exports = function(app) {
 
+ //get userID by their email
+app.get("/user/:email", function(req, res) {
+    db.User.findOne({
+        attributes :['id'],
+       where:
+       {
+           email:req.params.email
+       }
+    }).then(function(data){
+        console.log(data);
+        res.json(data);
+    });
+});   
+
 //get top 10 codes with maximum likes
-app.get("/", function(req, res) {
+app.get("/top10", function(req, res) {
     db.Code.findAll({
         order: [['likes', 'DESC']],
         limit: 10
     }).then(function(data){
         console.log(data);
+        res.json(data);
+    });
+});
+
+//get a particular code
+app.get("/codes/code/:codeID", function(req,res){
+    db.Code.findOne({
+        where: {
+            id:req.params.codeID
+        }
+    }).then(function(data){
+        console.log(data.text);
         res.json(data);
     });
 });
@@ -35,14 +61,14 @@ app.get("/comments/code/:codeID", function(req,res){
     });
 });
 
-//get a particular code
-app.get("/codes/code/:codeID", function(req,res){
-    db.Code.findOne({
+//get all languages of a particular code
+app.get("/languages/user/:userID", function(req,res){
+    db.Code.findAll({
+        attributes :[[db.Sequelize.fn('DISTINCT', db.Sequelize.col('language')) ,'language']],
         where: {
-            id:req.params.codeID
+            UserId:req.params.userID
         }
     }).then(function(data){
-        console.log(data.text);
         res.json(data);
     });
 });
