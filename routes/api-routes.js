@@ -19,11 +19,8 @@ app.get("/", function(req, res) {
         order: [['likes', 'DESC']],
         limit: 10
     }).then(function(data){
-        var resObj = {
-            codes: data
-        };
         console.log(data);
-        res.json(resObj);
+        res.json(data);
     });
 });
 
@@ -34,10 +31,7 @@ app.get("/comments/code/:codeID", function(req,res){
             CodeId:req.params.codeID
         }
     }).then(function(data){
-        var resObj = {
-            comments: data
-        };
-        res.json(resObj);
+        res.json(data);
     });
 });
 
@@ -48,11 +42,8 @@ app.get("/codes/code/:codeID", function(req,res){
             id:req.params.codeID
         }
     }).then(function(data){
-        var resObj = {
-            code: data
-        };
         console.log(data.text);
-        res.json(resObj);
+        res.json(data);
     });
 });
 
@@ -63,10 +54,7 @@ app.get("/codes/user/:userID", function(req,res){
             UserId:req.params.userID
         }
     }).then(function(data){
-        var resObj = {
-            codes: data
-        };
-        res.json(resObj);
+        res.json(data);
     });
 });
 
@@ -79,10 +67,7 @@ app.get("/codes/latest/user/:userID", function(req,res){
         order: [['updatedAt', 'DESC']],
         limit: 5
     }).then(function(data){
-        var resObj = {
-            codes: data
-        };
-        res.json(resObj);
+        res.json(data);
     });
 });
 
@@ -95,10 +80,23 @@ app.get("/codes/liked/user/:userID", function(req,res){
         order: [['likes', 'DESC']],
         limit: 5
     }).then(function(data){
-        var resObj = {
-            codes: data
-        };
-        res.json(resObj);
+        res.json(data);
+    });
+});
+
+//get all the codes that a user has liked
+app.get("/codes/likes/user/:userID", function(req,res){
+    db.Code.findAll({
+        include :[{
+                model: db.Like,
+                as: 'Likes'
+        }],
+        where :
+                {
+                    '$Likes.UserId$': req.params.userID
+                }
+    }).then(function(data){
+        res.json(data);
     });
 });
 
@@ -110,6 +108,7 @@ app.get("/search/codes/word/:keyword", function(req,res){
             as :'Tags'
         }],
         where: {
+            public : true,
             $or: [
                 {title : 
                                 {
@@ -124,36 +123,26 @@ app.get("/search/codes/word/:keyword", function(req,res){
             ]
         }
     }).then(function(data){
-        var resObj = {
-            codes: data
-        };
-        res.json(resObj);
+        res.json(data);
     })
 });
-
 
 //get a user's codes that have a particular keyword in its tag or its title
 app.get("/search/codes/user/:userID/word/:keyword", function(req,res){
     db.Code.findAll({
         where: {
-            $and: [
-                   {
-                        UserId: req.params.userID
-                   },
-                   {
-                        $or: [
-                            {title : 
-                                            {
-                                                $like: '%'+req.params.keyword+'%'
-                                            }
-                            },
-                            {'$Tags.tagname$' :
-                                            {
-                                                $like: '%'+req.params.keyword+'%'
-                                            }
-                            }
-                        ]
-                   }
+            UserId:req.params.userID,
+            $or: [
+                {title : 
+                                {
+                                    $like: '%'+req.params.keyword+'%'
+                                }
+                },
+                {'$Tags.tagname$' :
+                                {
+                                    $like: '%'+req.params.keyword+'%'
+                                }
+                }
             ]
         },
         include : [{
@@ -161,11 +150,7 @@ app.get("/search/codes/user/:userID/word/:keyword", function(req,res){
             as :'Tags'
         }]
     }).then(function(data){
-        var resObj = {
-            codes: data
-        };
-        console.log(data);
-        res.json(resObj);
+        res.json(data);
     })
 }); 
 
@@ -177,10 +162,7 @@ app.get("/search/codes/language/:language", function(req,res){
             language: req.params.language
         }
     }).then(function(data){
-        var resObj = {
-            codes: data
-        };
-        res.json(resObj);
+        res.json(data);
     });
 });
 
@@ -193,10 +175,7 @@ app.get("/search/codes/language/:language/user/:userID", function(req,res){
             userID : req.params.userID
         }
     }).then(function(data){
-        var resObj = {
-            codes: data
-        };
-        res.json(resObj);
+        res.json(data);
     });
 });
 
@@ -231,6 +210,16 @@ app.post("/codes", function(req,res){
 app.post("/tags", function(req,res){
     db.Tag.create({
         tagname: req.body.tagname,
+        CodeId : req.body.codeID
+    }).then(function(data){
+        res.json({ id: data.insertId });
+    })
+});
+
+//add new like
+app.post("/likes", function(req,res){
+    db.Like.create({
+        UserId: req.body.userID,
         CodeId : req.body.codeID
     }).then(function(data){
         res.json({ id: data.insertId });

@@ -34,10 +34,6 @@ module.exports = function(sequelize, DataTypes) {
           type: DataTypes.INTEGER,
           deafultValue:0
       },
-      dislikes: {
-          type: DataTypes.INTEGER,
-          deafultValue:0
-      },
       language: {
           type: DataTypes.STRING,
           allowNull : false
@@ -54,6 +50,9 @@ module.exports = function(sequelize, DataTypes) {
             onDelete: "cascade"
         });
         models.Code.hasMany(models.Tag, {
+            onDelete: "cascade"
+        });
+        models.Code.hasMany(models.Like, {
             onDelete: "cascade"
         });
     }
