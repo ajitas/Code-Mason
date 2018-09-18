@@ -112,6 +112,7 @@ $(document).ready(function() {
 /**************************Taylor*******************************/
 
 /**************************Craig*******************************/
+//add new snippet and tags on click of modal submit button
 $("#snippet-submit").on("click", function(){
   //create object from form inputs
   var newSnippet = {
@@ -148,16 +149,29 @@ $("#snippet-submit").on("click", function(){
   });
 });
 
-function onSignIn(googleUser) {
-  // Useful data for your client-side scripts:
-  var profile = googleUser.getBasicProfile();
-  console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-  console.log('Full Name: ' + profile.getName());
-  console.log("Email: " + profile.getEmail());
+var isSignedIn = false;
 
-  // The ID token you need to pass to your backend:
-  var id_token = googleUser.getAuthResponse().id_token;
-  console.log("ID Token: " + id_token);
+//google sign in function. Runs when a user signes up/in and when a user is already signed in
+function onSignIn(googleUser) {
+  //user data from google sign in
+  var profile = googleUser.getBasicProfile();
+  var name = profile.getName();
+  var email = profile.getEmail();
+
+  //get user id
+  $.get("/api/users/" + email, function(res){
+    if (res.id) {
+      //set session storage with user id
+      sessionStorage.setItem("userID", res.id);
+    }
+    // if user id does not exist create a new user
+    else {
+      $.post("/users", {name: name, email: email}, function(res){
+        //set session storage with user id
+        sessionStorage.setItem("userID", res.id);
+      });
+    }
+  });
 }
 
 function signOut() {
