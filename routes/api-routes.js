@@ -77,6 +77,9 @@ app.get("/languages/user/:userID", function(req,res){
 app.get("/languages", function(req,res){
     db.Code.findAll({
         attributes :[[db.Sequelize.fn('DISTINCT', db.Sequelize.col('language')) ,'language']],
+        where:{
+            public:true
+        }
     }).then(function(data){
         res.json(data);
     });
@@ -114,6 +117,18 @@ app.get("/codes/liked/user/:userID", function(req,res){
         },
         order: [['likes', 'DESC']],
         limit: 5
+    }).then(function(data){
+        res.json(data);
+    });
+});
+
+//get total likes for a particular code
+app.get("/codes/likes/:codeID", function(req,res){
+    db.Code.findOne({
+        attributes:['likes'],
+        where: {
+            CodeId:req.params.codeID
+        }
     }).then(function(data){
         res.json(data);
     });
@@ -194,6 +209,7 @@ app.get("/search/codes/language/:language", function(req,res){
     db.Code.findAll({
         where :
         {
+            public : true,
             language: req.params.language
         }
     }).then(function(data){
