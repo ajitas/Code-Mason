@@ -8,47 +8,48 @@
     <!-- UIkit JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.16/js/uikit.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.16/js/uikit-icons.min.js"></script>
+    <!-- UIkit Icons -->
+    <script src="uikit/dist/js/uikit-icons.min.js"></script>
     <!-- Google Fonts-->
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <!-- jQuery-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- Local Style -->
-    <link rel="stylesheet" type="text/css" href="../public/assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
     <title>Code Mason</title>
 </head>
 
 <body>
-  <div class="flex-container">
-    <div class="left-nav">
-      <button class="uk-button uk-button-default uk-margin-small-right" id="add-snippet" type="button" uk-toggle="target: #add-snippet-modal">Add Snippet</button>
-    </div>
+  <div class="flex-container navbar">
     
     <div class="title">
-      <img src="../public/assets/img/craiglogo.svg" alt="brand-logo" height="350" width="350">  
+      <img src="/assets/img/craiglogo.svg" alt="brand-logo" height="300" width="300">  
     </div>
     
     <div class="nav-search">
-      <div class="uk-margin" uk-margin>
         <div uk-form-custom="target: true">
-          <input class="uk-input uk-form-width-medium" type="text" placeholder="Search Code Mason">
-          <button class="uk-button uk-button-default" id="search-submit">Submit</button>
+          <input class="uk-input uk-form-width-medium" id="nav-search-input" type="text" placeholder="Search Code Mason">
+          <button class="uk-button navbar-button uk-button-default" id="nav-search-submit">Submit</button>
         </div>
-      </div>
     </div>  
     
     <div class="login">
-      <button class="uk-button uk-button-default uk-margin-small-right" id="login-btn" type="button" uk-toggle="target: #login-modal">Login</button>
+      <button class="uk-button navbar-button uk-button-default uk-margin-small-right" id="login-btn" type="button" uk-toggle="target: #login-modal">Login</button>
     </div>
-  </div>  
-
+  
+</div>
   <div class="flex-container main-content">
-    
+    <div class="side-menu-container">
     <div class="side-menu">
       <div class="user-snippet-search">
         <!-- Dynamic jQuery Content -->
       </div>
 
-      <div class="recent-snippets-and-search">
+      <div class="top-snippets">
+        <!-- Dynamic jQuery Content -->
+      </div>
+
+      <div class="liked-snippets">
         <!-- Dynamic jQuery Content -->
       </div>
 
@@ -60,25 +61,10 @@
          <!-- Dynamic jQuery Content -->
       </div>
     </div>
-
+  </div>  
     <div class="snippets-container">
       <!-- <h4>Popular Snippets</h4> -->
- 
-      <!-- this becomes partial   -->
-        <!-- <div class="uk-card uk-card-default uk-width-1-2@m">
-          <div class="uk-card-header">
-            <div class="uk-grid-small uk-flex-middle" uk-grid>
-              <div class="uk-width-expand">
-                <h3 class="uk-card-title uk-margin-remove-bottom">Code block title</h3>
-                <p class="uk-text-meta uk-margin-remove-top">Code description. ipsum ipsum.</p>
-              </div>
-            </div>
-          </div>
-          <div class="uk-card-body">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
-          </div>
-        </div>  -->
-    <!-- end partial -->
+
     
     </div>
     
@@ -199,6 +185,6 @@
 
   </div>
 
-  <script src = "../public/assets/js/code-mason.js"></script>
+  <script src = "/assets/js/code-mason.js"></script>
 </body>
 </html>
