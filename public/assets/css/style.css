@@ -83,10 +83,10 @@ h1 {
 }
 
 pre {
-    background-color: black;
+    background-color: #333333;
     color: white;
-    border-color: black;
     text-align: left;
+    border-color: #333333;
 }
 
 #create-account-submit {
@@ -106,16 +106,60 @@ pre {
     color: white;
 }
 
+.comment-card {
+    background-color: white;
+    color: #969A97;
+    margin-bottom: 10px;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+}
+
+.add-comment-card {
+    background-color: white;
+    color: #969A97;
+    margin-bottom: 10px;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+}
+
+.snippet-render-area {
+    background: #333333;
+}
+
+.render-likes-div {
+    display: flex;
+    flex-direction: column;
+    width: 60px;
+    justify-content: center;
+    align-content: center;
+}
+
+.like-button {
+    margin-bottom: 0px;
+}
+
 .total-likes {
-    text-align: right;
+    margin-top: 0px;
 }
 
-.comment-body {
-    outline: 3px solid #F85E55;
+#add-snippet {
+    width: 100%;
 }
 
+button {
+    background-color: #333333;
+    color: white;
+    padding: 12px;
+    border: 1px solid #333333;
+    font-size: 1.1em;
+}
 
+#user-search {
+    padding: 12px;
+    font-size: 1.1em;
+}
 
+h2 {
+    color: white;
+}
 
 
 

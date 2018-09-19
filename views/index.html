@@ -8,12 +8,21 @@
     <!-- UIkit JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.16/js/uikit.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.16/js/uikit-icons.min.js"></script>
-    <!-- UIkit Icons -->
-    <script src="uikit/dist/js/uikit-icons.min.js"></script>
+    <meta name="google-signin-scope" content="profile email">
+    <!-- google sign in app key info -->
+   <meta name="google-signin-client_id" content="386255515110-etvh3c555p62veo5fsgbtgj0hkd4ljf0.apps.googleusercontent.com">
+   <!-- google sign in js library -->
+   <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <!-- Font Awesome Icons-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <!-- Google Fonts-->
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <!-- jQuery-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- highlight js -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+   <script>hljs.initHighlightingOnLoad();</script>
     <!-- Local Style -->
     <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
     <title>Code Mason</title>
@@ -34,39 +43,45 @@
     </div>  
     
     <div class="login">
-      <button class="uk-button navbar-button uk-button-default uk-margin-small-right" id="login-btn" type="button" uk-toggle="target: #login-modal">Login</button>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        <a href="#" onclick="signOut();">Sign out</a>    
     </div>
   
 </div>
   <div class="flex-container main-content">
     <div class="side-menu-container">
-    <div class="side-menu">
-      <div class="user-snippet-search">
-        <!-- Dynamic jQuery Content -->
-      </div>
-
-      <div class="top-snippets">
-        <!-- Dynamic jQuery Content -->
-      </div>
-
-      <div class="liked-snippets">
-        <!-- Dynamic jQuery Content -->
-      </div>
-
-      <div class="language-sort">
-        <!-- Dynamic jQuery Content -->
-      </div>
       
-      <div class="tag-sort">  
-         <!-- Dynamic jQuery Content -->
+    <div class="side-menu">
+      <div class="add-snippet">
+            <!--Dynamic jQuery Content-->
+      </div>
+      <div class="uk-padding-small">
+        <div class="user-snippet-search">
+          <div class="uk-button-group">
+
+          <!-- Dynamic jQuery Content -->
+          </div>
+        </div>
+
+        <div class="top-snippets">
+          <!-- Dynamic jQuery Content -->
+        </div>
+
+        <div class="liked-snippets">
+          <!-- Dynamic jQuery Content -->
+        </div>
+
+        <div class="language-sort">
+          <!-- Dynamic jQuery Content -->
+        </div>
+        
+        <div class="recent-snippets">  
+          <!-- Dynamic jQuery Content -->
+        </div>
       </div>
     </div>
   </div>  
     <div class="snippets-container">
-      <!-- <h4>Popular Snippets</h4> -->
-
-    
-    </div>
     
     <!-- create account modal -->
     <!-- <div id="create-account-modal" uk-modal>
@@ -125,58 +140,59 @@
     <!-- add snippet modal -->
     <div id="add-snippet-modal" uk-modal>
         <div class="uk-modal-dialog uk-modal-body">  
-          <h2 class="uk-modal-title">Add Snippet</h2>
+          <h2>Add Snippet</h2>
           
-          <form class="uk-form-stacked">
+          <form class="uk-form-stacked" method="POST">
             <div class="uk-margin">
-              <label class="uk-form-label" for="form-stacked-text">Snippet Title</label>
+              <label for="form-stacked-text">Snippet Title</label>
               <div class="uk-form-controls">
-                <input class="uk-input" id="form-stacked-text new-snippet-name" type="text" placeholder="">
+                <input class="uk-input form-stacked-text" id="new-snippet-name" type="text" placeholder="">
               </div>
             </div>          
             
             <div class="uk-margin">
-              <label class="uk-form-label" for="form-stacked-text">Snippet Description</label>
+              <label for="form-stacked-text">Snippet Description</label>
               <div class="uk-form-controls">
-                <input class="uk-input" id="form-stacked-text new-snippet-descrip" type="text" placeholder="">
+                <input class="uk-input form-stacked-text" id="new-snippet-descrip" type="text" placeholder="">
               </div>
             </div>
             
             <div class="uk-margin">
-              <label class="uk-form-label" for="form-stacked-text">Snippet Code</label>
+              <label for="form-stacked-text">Snippet Code</label>
               <div class="uk-form-controls">
                 <textarea class="uk-textarea" id="new-snippet-code" rows="5" placeholder=""></textarea>
               </div>
             </div>
             
             <div class="uk-margin">
-              <label class="uk-form-label" for="form-stacked-text">Snippet Tags (seperate by commas)</label>
+              <label for="form-stacked-text">Snippet Tags (seperate by commas)</label>
               <div class="uk-form-controls">
-                <input class="uk-input" id="form-stacked-text new-snippet-tags" type="text" placeholder="">
+                <input class="uk-input form-stacked-text" id="new-snippet-tags" type="text" placeholder="">
               </div>
             </div>
   
             <div class="uk-margin">
               <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-                <label><input class="uk-radio" type="radio" name="radio2"> Public</label>
-                <label><input class="uk-radio" type="radio" name="radio2"> Private</label>
+                  <label><input class="uk-radio" type="radio" name="private" value="true"> Public</label>
+                  <label><input class="uk-radio" type="radio" name="private" value="false"> Private</label>
               </div>
             </div>
   
             <div class="uk-margin">
-              <label class="uk-form-label" for="form-stacked-text">Language / Framework</label>  
+              <label for="form-stacked-text">Language / Framework</label>  
               <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-                <label><input class="uk-radio" type="radio" name="radio2"> HTML</label>
-                <label><input class="uk-radio" type="radio" name="radio2"> CSS</label>
-                <label><input class="uk-radio" type="radio" name="radio2"> Javascript</label>
-                <label><input class="uk-radio" type="radio" name="radio2"> jQuery</label>
-                <label><input class="uk-radio" type="radio" name="radio2"> Python</label>
-                <label><input class="uk-radio" type="radio" name="radio2"> PHP</label>
+                <label><input class="uk-radio" type="radio" name="lang" value="HTML"> HTML</label>
+                <label><input class="uk-radio" type="radio" name="lang" value="CSS"> CSS</label>
+                <label><input class="uk-radio" type="radio" name="lang" value="Javascript"> Javascript</label>
+                <label><input class="uk-radio" type="radio" name="lang" value="jQuery"> jQuery</label>
+                <label><input class="uk-radio" type="radio" name="lang" value="Python"> Python</label>
+                <label><input class="uk-radio" type="radio" name="lang" value="PHP"> PHP</label>
+                <label><input class="uk-radio" type="radio" name="lang" value="C"> C</label>
               </div>
             </div>
   
             <div class="uk-margin">
-              <button class="uk-button uk-button-default" id="snippet-submit">Submit</button>  
+              <button id="snippet-submit">Submit</button>  
             </div>       
           </form>
         </div>

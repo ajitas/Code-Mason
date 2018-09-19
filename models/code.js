@@ -46,7 +46,7 @@ module.exports = function(sequelize, DataTypes) {
       },
       likes: {
           type: DataTypes.INTEGER,
-          deafultValue:0
+          defaultValue:0
       },
       language: {
           type: DataTypes.STRING,
@@ -73,9 +73,6 @@ module.exports = function(sequelize, DataTypes) {
 
     return Code;
 };
-
-
-
 
 
 

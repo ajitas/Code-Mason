@@ -38,10 +38,61 @@ $(document).on("click", ".language-link", function() {
     $.get("/search/codes/language/"+ language +"/user/2", function(results) {
         $(".snippets-container").empty();
         for (var i = 0; i < results.length; i++) {
-        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+results[i].title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+results[i].description+`</p></div></div></div><div class='uk-card-body'><p><pre>`+results[i].text+`</pre></p></div></div>`);
-        }    
+        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+results[i].title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+results[i].description+`</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+results[i].text+`</code></pre></p></div></div>`);
+        }  
+      includeHilights();    
     })
 })
+
+//USER SNIPPETS RENDER RECENT SNIPPETS
+function renderUserSnippets(userID) {
+    var userSnippets = [];
+  
+    $.get("/codes/latest/user/" + userID, function(results) {
+      for (var i = 0; i < results.length; i++) {
+          userSnippets.push(results[i]);
+        } 
+  console.log(userSnippets);
+    $(".snippets-container").empty();
+    $(".snippets-container").append(`<h4>Your Recent Snippets</h4>`);
+  
+    for (var i = 0; i < userSnippets.length; i++) {
+        $(".snippets-container").append("<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'><a href='#' class='single-snippet-link' data-snippetID="+userSnippets[i].id +">" + userSnippets[i].title + "</a></h3><p class='uk-text-meta uk-margin-remove-top'>" + userSnippets[i].description + "</p></div><div class='render-likes-div'><p class='like-button'><button type='button' data-snippetID='"+userSnippets[i].id+"' class='add-like'><i class='fas fa-thumbs-up fa-3x'></i></button></p><p class='total-likes'><span class='number-of-likes'>"+userSnippets[i].likes+ "</span> Likes</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>"+userSnippets[i].text.replace(/\</g,"&lt;")+"</code></pre></p></div></div>");
+    }
+    includeHilights();
+  })
+  };
+  
+  //USER SIDE MENU 
+function userTopSnippets(userID) {
+
+    var topSnippets = [];
+$.get("/codes/liked/user/" +userID, function(results) {
+    for (var i = 0; i < results.length; i++) {
+        topSnippets.push(results[i]);
+      };
+      
+      $(".top-snippets").html("<h4>Top Snippets</h4>" +  "<ul class=topSnippetsList style='list-style-type:none'>"
+    + "</ul>");
+    
+    for (var i = 0; i < topSnippets.length; i ++) {
+        $(".topSnippetsList").append("<li><a href='#' class='single-snippet-link' data-snippetID="+ topSnippets[i].id + ">" + topSnippets[i].title + "</a></li>");
+    }
+})
+}
+
+// //USER SIDE MENU TOP SNIPPETS ON CLICK LISTENER
+// $(document).on("click", ".", function() {
+//     var codeID = $(this).attr("data-ID");
+//     console.log(codeID);
+//     $.get("/codes/code/" + codeID, function(result) {
+//         $(".snippets-container").empty();
+//         $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div></div></div><div class='uk-card-body'><p><pre><code>`+result.text+`</code></pre></p></div></div>`);
+//         includeHilights();
+//     })
+    
+// })
+
 
 //PUBLIC PAGE SIDE BAR RENDERING
 function RenderPubliclanguages() {
@@ -68,37 +119,32 @@ function RenderPubliclanguages() {
       $.get("/search/codes/language/"+ language, function(results) {
           $(".snippets-container").empty();
           for (var i = 0; i < results.length; i++) {
-          $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+results[i].title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+results[i].description+`</p></div></div></div><div class='uk-card-body'><p><pre>`+results[i].text+`</pre></p></div></div>`);
+          $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'><a href='#' class='single-snippet-link' data-snippetID='` +results[i].id +`'>`+results[i].title+`</a></h3><p class='uk-text-meta uk-margin-remove-top'>`+results[i].description+`</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+results[i].text+`</code></pre></p></div></div>`);
           }    
+          includeHilights();
       })
   })
 
-//USER SIDE MENU 
-function userTopSnippets(userID) {
+  function publicRecentSnippets() {
+      $.get("/codes/latest", function(result) {
+          $(".recent-snippets").html("<h4>Recently Added Snippets</h4>" + "<ul class=sidebarRecentSnippets style='list-style-type:none'>"
+          + "</ul>");
+          for (var i = 0; i < result.length; i ++) {
+            $(".sidebarRecentSnippets").append("<li><a href='#' data-snippetID='"+ result[i].id + "' class='recent-snippets-link'>" + result[i].title + "</a></li>")
+          }
+      })
+  }
 
-    var topSnippets = [];
-$.get("/codes/liked/user/" +userID, function(results) {
-    for (var i = 0; i < results.length; i++) {
-        topSnippets.push(results[i]);
-      };
-      
-      $(".top-snippets").html("<h4>Top Snippets</h4>" +  "<ul class=topSnippetsList style='list-style-type:none'>"
-    + "</ul>");
-    
-    for (var i = 0; i < topSnippets.length; i ++) {
-        $(".topSnippetsList").append("<li><a href='#' class='code-link' data-ID="+ topSnippets[i].id + ">" + topSnippets[i].title + "</a></li>");
-    }
-})
-}
+  $(document).on("click", ".recent-snippets-link", function() {
+      var snippetID = $(this).attr("data-snippetID");
 
-$(document).on("click", ".code-link", function() {
-    var codeID = $(this).attr("data-ID");
-    console.log(codeID);
-    $.get("/codes/code/" + codeID, function(result) {
+      $.get("/codes/code/" + snippetID, function(result) {
         $(".snippets-container").empty();
-        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div></div></div><div class='uk-card-body'><p><pre>`+result.text+`</pre></p></div></div>`);
-    })
-})
+            $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+result.text+`</code></pre></p></div></div>`);
+            includeHilights();
+      })
+  })
+
 
 function likedSnippets() {
 
@@ -123,20 +169,19 @@ $(document).on("click", ".liked-link", function() {
     console.log(likedID);
     $.get("/codes/code/" + likedID, function(result) {
         $(".snippets-container").empty();
-        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div></div></div><div class='uk-card-body'><p><pre>`+result.text+`</pre></p></div></div>`);
+        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div></div></div><div class='uk-card-body'><p><pre><code>`+result.text+`</code></pre></p></div></div>`);
     })
 })
 
 //USER SIDE BAR SEARCH OWN SNIPPETS
 function sidebarSnippetSearch(userID) {
-  $(".user-snippet-search").html("<input class='uk-input uk-form-width-medium' id='user-search' data-user=" +userID+ "type='text' placeholder='Search Your Snippets'></input>" + "<button class='uk-button uk-button-default' id='search'>Search</button>");
+  $(".user-snippet-search").html("<input id='user-search' data-user=" +userID+ "type='text' placeholder='Search Your Snippets'></input>" + "<button id='search'>Search</button>");
 }
 
-//USER SIDE BAR SEARCH OWN SNIPPETS ON CLICK LISTENER
+//USER SIDE BAR SEARCH OWN SNIPPETS ON CLICK LISTENER AND RESULTS GENERATION IN MAIN CONTENT
 $(document).on("click", "#search", function() {
   var searchTerm = $("#user-search").val().trim();
   var userID = $("#user-search").attr("data-user");
-
 
   $.get("/search/codes/user/"+ userID +"/word/" + searchTerm, function(result) {
       $(".snippets-container").empty();
@@ -144,22 +189,20 @@ $(document).on("click", "#search", function() {
       $(".snippets-container").append(`<h4>Search Results</h4>`);
 
       for (var i = 0; i < result.length; i++) {
-        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result[i].title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result[i].description+`</p></div></div></div><div class='uk-card-body'><p><pre>`+result[i].text+`</pre></p></div></div>`);
+        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result[i].title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result[i].description+`</p></div></div></div><div class='uk-card-body'><p><pre><code>`+result[i].text+`</code></pre></p></div></div>`);
       }
   })
 })
 
 
 
-/*****************NAV BAR JQUERY ELEMENT GENERATION*************/
+//NAV BAR ADD SNIPPET RENDER
 function renderAddSnippet() {
 
-$(".left-nav").html("<button class='uk-button uk-button-default uk-margin-small-right' id='add-snippet' type='button' uk-toggle='target: #add-snippet-modal'>Add Snippet</button>");
+$(".add-snippet").html("<button id='add-snippet' type='button' uk-toggle='target: #add-snippet-modal'>Add Snippet</button>");
 }
-/*****************MAIN CONTENT JQUERY ELEMENT GENERATION*************/
 
-
-/*****NAVBAR SEARCH  **********/
+//NAV BAR SEARCH ALL SITE ON CLICK LISTENER
   $(document).on("click", "#nav-search-submit", function() {
     var searchTerm = $("#nav-search-input").val().trim();
   
@@ -168,100 +211,122 @@ $(".left-nav").html("<button class='uk-button uk-button-default uk-margin-small-
         $(".snippets-container").empty();
         $(".snippets-container").append(`<h4>Search Results</h4>`);
         for (var i = 0; i < result.length; i++) {
-          $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result[i].title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result[i].description+`</p></div></div></div><div class='uk-card-body'><p><pre>`+result[i].text+`</pre></p></div></div>`);
+          $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result[i].title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result[i].description+`</p></div></div></div><div class='uk-card-body'><p><pre><code>`+result[i].text+`</code></pre></p></div></div>`);
         }
     })
   })
 
-/****** USER PAGE USERS SNIPPETS ********/
-function renderUserSnippets(userID) {
-  var userSnippets = [];
-
-  $.get("/codes/latest/user/" + userID, function(results) {
-    for (var i = 0; i < results.length; i++) {
-        userSnippets.push(results[i]);
-      } 
-
-  $(".snippets-container").append(`<h4>Your Recent Snippets</h4>`);
-
-  for (var i = 0; i < userSnippets.length; i++) {
-    $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+userSnippets[i].title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+userSnippets[i].description+`</p></div></div></div><div class='uk-card-body'><p><pre>`+userSnippets[i].text+`</pre></p></div></div>`);
-  }
-})
-};
 
 /****** PUBLIC PAGE TOP SNIPPETS FOR MAIN CONTENT ********/
-function renderTopSnippets() {
+function renderTopSnippets(cb) {
   var topSnippets = [];
 
   $.get("/top10", function(results) {
     
     for (var i = 0; i < results.length; i++) {
-      topSnippets.push({id: results[i].id, title:results[i].title, description:results[i].description, snippet:results[i].text});
+      topSnippets.push({id: results[i].id, title:results[i].title, description:results[i].description, snippet:results[i].text, likes: results[i].likes});
     } 
   
     $(".snippets-container").append(`<h4>Top Snippets</h4>`);
    
     for (var i = 0; i < topSnippets.length; i++) {
-      $(".snippets-container").append("<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'><a href='#' class='single-snippet-link' data-snippetID="+topSnippets[i].id +">" + topSnippets[i].title + "</a></h3><p class='uk-text-meta uk-margin-remove-top'>" + topSnippets[i].description + "</p></div><div class='uk-width-expand render-likes-div'></div></div></div><div class='uk-card-body'><p><pre><code>"+topSnippets[i].snippet.replace(/\</g,"&lt;")+"</code></pre></p></div></div>");
-      getTotalLikes(topSnippets[i].id);  
+      $(".snippets-container").append("<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'><a href='#' class='single-snippet-link' data-snippetID="+topSnippets[i].id +">" + topSnippets[i].title + "</a></h3><p class='uk-text-meta uk-margin-remove-top'>" + topSnippets[i].description + "</p></div><div class='render-likes-div'><p class='total-likes'>"+topSnippets[i].likes+ " Likes</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>"+topSnippets[i].snippet.replace(/\</g,"&lt;")+"</code></pre></p></div></div>");
     }
-  
+  cb();
   });
 
 };
 
-function getTotalLikes(snipID) {
-    $.get("/codes/likes/"+snipID, function(result) {
-        console.log(result);
-        $(".render-likes-div").append("<h5 class='total-likes uk-margin-remove-bottom'>" +result+ "Likes</h5><a href='#' class='add-like' uk-icon='heart'></a>")
-    })
-}
-
-$(document).on("click", ".single-snippet-link", function() {
-  var singleSnippet = $(".single-snippet-link").attr("data-snippetID");
-  
+function renderSingleSnippet(singleSnippet){
     $.get("/codes/code/" + singleSnippet, function(result) {
-        $(".snippets-container").empty();
+        console.log("SINGLE SNIPPET RESULT: " , result);
+         $(".snippets-container").empty();
+         $("#comments-container").remove();
         // $(".snippets-container").append(`<h4>Search Results</h4>`);
         
-        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div></div></div><div class='uk-card-body'><p><pre>`+result.text+`</pre></p></div></div>`);
+        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+result.text+`</code></pre></p></div></div>`);
+        $(".snippets-container").append('<div id="comments-container"></div>');
         renderSnippetComments(singleSnippet);
+        includeHilights();
     })
+}
+$(document).on("click", ".single-snippet-link", function() {
+  renderSingleSnippet(parseInt($(this).attr("data-snippetID")));
   })
 
+  //SINGLE SNIPPET RENDER COMMENTS & ADD COMMENT CARD
   function renderSnippetComments (snipID) {
     $.get("/comments/code/" + snipID, function(result) {
-
-      $(".snippets-container").append("<div class='uk-card uk-card-default comment-card'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><textarea class='uk-textarea' rows='2' placeholder='Join the conversation'></textarea><button class='uk-button uk-button-default'>Add comment</button></div></div></div></div>");
+        if(sessionStorage.getItem("userID")){
+            $(".snippets-container").append("<div class='uk-card uk-card-default uk-card-body add-comment-card'><textarea class='uk-textarea' id='new-comment' rows='2' placeholder='Join the conversation'></textarea><button id='add-comment' data-codeID='" + snipID + "'>Add comment</button></div>");
+        }
       for (var i = 0; i < result.length; i++) {
-          console.log(result[i].UserId);
-        $(".comment-card").append("<div class='comment-body uk-card-body'><p>" + getUserName(result[i].UserId) + "</p><p>"+result[i].text+"</p></div>");
+            
+            console.log(result);
+            $("#comments-container").append("<div class='uk-card uk-card-default uk-card-body comment-card'><p>"+result[i].text+"</p><p> Posted By: " + result[i].User.name + "</p></div>");
       }  
     });
   }
-
-  function getUserName (userID) {
-      $.get(""+userID, function(result) {
-          return result.name;
+  //ON CLICK LISTENER FOR ADD COMMENT
+  $(document).on("click", "#add-comment", function() {
+     var commentObj = { 
+      text: $("#new-comment").val().trim(),
+      userID: sessionStorage.getItem("userID"),
+      codeID:  $(this).attr("data-codeID")
+     }
+      $.post("/comments", commentObj, function() {
+        renderSingleSnippet(parseInt(commentObj.codeID));
       })
+  })
+
+  //ON CLICK LISTENER FOR LIKING COMMENT
+  $(document).on("click",".add-like", function(){
+    var codeID=parseInt($(this).attr("data-snippetID"));
+    var userID = parseInt(sessionStorage.getItem("userID"));
+    var currentSnippet = $(this);
+    $.get("/likes/user/"+userID+"/code/"+codeID, function(result){
+        if(!result){
+            $.ajax("/likes", {
+                type: "POST",
+                data:{userID:userID, codeID:codeID}
+            }).then(function() {
+                $.ajax("/code/likes/"+codeID, {
+                    type: "PUT"
+                }).then(function() {
+                    renderSingleSnippet(codeID);
+                });
+            });
+        }
+    });
+});
+
+  function includeHilights() {
+    $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
   }
   
+  function renderPageCheck() { 
+    if (sessionStorage.getItem("userID")) {
+        var userID = sessionStorage.getItem("userID");
+        console.log(userID);
+      renderUserSnippets(userID);
+      renderAddSnippet();
+      sidebarSnippetSearch(userID);
+      userTopSnippets(userID);
+      languageSort(userID);
+    }
+    
+    else {
+      renderTopSnippets(includeHilights);
+      RenderPubliclanguages();
+      publicRecentSnippets();
+    }
+  } 
+
     $(document).ready(function() {
-        if (sessionStorage.getItem("userID")) {
-            var userID = sessionStorage.getItem("userID");
-          renderUserSnippets(userID);
-          renderAddSnippet();
-          sidebarSnippetSearch(userID);
-          userTopSnippets(userID);
-          languageSort(userID);
-        }
-        
-        else {
-          renderTopSnippets();
-          RenderPubliclanguages();
-        }
-      })
+      renderPageCheck(); 
+    })
 /*****MODAL INPUTS TO DATABASE ********/
 
    
@@ -270,7 +335,80 @@ $(document).on("click", ".single-snippet-link", function() {
 
 /**************************Craig*******************************/
 
+//add new snippet and tags on click of modal submit button
+$("#snippet-submit").on("click", function(){
+    //create object from form inputs
+    var newSnippet = {
+      title: $("#new-snippet-name").val().trim(),
+      description: $("#new-snippet-descrip").val().trim(),
+      text: $("#new-snippet-code").val().trim(),
+      public: $("input:radio[name='private']:checked").val(),
+      language: $("input:radio[name='lang']:checked").val(),
+      userID: parseInt(sessionStorage.getItem("userID"))
 
+    };
+    console.log(newSnippet);
+    // get the comma seperated tag value
+    var tags = $("#new-snippet-tags").val().trim();
+    //split by comma into an array
+    tags = tags.split(",");
+  
+    //query api to create new code snippet entry
+    $.post("/codes", newSnippet, function(res){
+      //new code snippet id returned from query
+      var codeID = res.id;
+        console.log(codeID);
+      //loop tags array
+      for (var i = 0; i < tags.length; i++) {
+        //create object with tag and code snippet id to send in post request
+        var tag = {
+          tagname: tags[i].trim(),
+          codeID: codeID
+        };
+        //send query to create new tag entry
+        $.post("/tags", tag, function(){
+  
+        });
+      }
+    });
+  });
+  
+  //google sign in function. Runs when a user signes up/in and when a user is already signed in
+  function onSignIn(googleUser) {
+    //user data from google sign in
+    var profile = googleUser.getBasicProfile();
+    var name = profile.getName();
+    var email = profile.getEmail();
+  
+    //get user id
+    $.get("/user/" + email, function(res){  
+      if (res) {
+        //set session storage with user id
+        sessionStorage.setItem("userID", res.id);
+        renderPageCheck();
+      }
+      // if user id does not exist create a new user
+      else {
+        $.post("/users", {name: name, email: email}, function(res){
+          //set session storage with user id
+          sessionStorage.setItem("userID", res.id);
+          window.location.reload();
+        });
+      }
+    });
+  }
+  //sign user out of app via google sign in
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      //remove session id
+      sessionStorage.removeItem("userID");
+      //reload page so the user sees the public view after signing out
+      window.location.reload();
+      console.log('User signed out.');
+    });
+  }
+  
 
 
 
