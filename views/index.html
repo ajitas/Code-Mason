@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.16/css/uikit.min.css" />
+    <!-- UIkit JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.16/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.16/js/uikit-icons.min.js"></script>
+    <meta name="google-signin-scope" content="profile email">
+    <!-- google sign in app key info -->
+   <meta name="google-signin-client_id" content="386255515110-etvh3c555p62veo5fsgbtgj0hkd4ljf0.apps.googleusercontent.com">
+   <!-- google sign in js library -->
+   <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <!-- Font Awesome Icons-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <!-- Google Fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <!-- jQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- highlight js -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+   <script>hljs.initHighlightingOnLoad();</script>
+    <!-- Local Style -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+    <title>Code Mason</title>
+</head>
+
+<body>
+  <div class="flex-container navbar">
+    
+    <div class="title">
+      <img src="/assets/img/craiglogo.svg" alt="brand-logo" height="300" width="300">  
+    </div>
+    
+    <div class="nav-search">
+        <div uk-form-custom="target: true">
+          <input class="uk-input uk-form-width-medium" id="nav-search-input" type="text" placeholder="Search Code Mason">
+          <button class="uk-button navbar-button uk-button-default" id="nav-search-submit">Submit</button>
+        </div>
+    </div>  
+    
+    <div class="login">
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        <a href="#" onclick="signOut();">Sign out</a>    
+    </div>
+  
+</div>
+  <div class="flex-container main-content">
+    <div class="side-menu-container">
+      
+    <div class="side-menu">
+      <div class="add-snippet">
+            <!--Dynamic jQuery Content-->
+      </div>
+      <div class="uk-padding-small">
+        <div class="user-snippet-search">
+          <div class="uk-button-group">
+
+          <!-- Dynamic jQuery Content -->
+          </div>
+        </div>
+
+        <div class="top-snippets">
+          <!-- Dynamic jQuery Content -->
+        </div>
+
+        <div class="liked-snippets">
+          <!-- Dynamic jQuery Content -->
+        </div>
+
+        <div class="language-sort">
+          <!-- Dynamic jQuery Content -->
+        </div>
+        
+        <div class="recent-snippets">  
+          <!-- Dynamic jQuery Content -->
+        </div>
+      </div>
+    </div>
+  </div>  
+    <div class="snippets-container">
+    
+    <!-- create account modal -->
+    <!-- <div id="create-account-modal" uk-modal>
+      <div class="uk-modal-dialog uk-modal-body">
+        <h2 class="uk-modal-title">Create Account</h2>
+        <form class="uk-form-stacked">
+          <div class="uk-margin">
+            <label class="uk-form-label" for="form-stacked-text">Username</label>
+            <div class="uk-form-controls">
+              <input class="uk-input" id="form-stacked-text" type="text" placeholder="">
+            </div>
+          </div>          
+          <div class="uk-margin">
+            <label class="uk-form-label" for="form-stacked-text">Password</label>
+            <div class="uk-form-controls">
+              <input class="uk-input" id="form-stacked-text" type="text" placeholder="">
+            </div>
+          </div>
+          <div class="uk-margin">
+            <label class="uk-form-label" for="form-stacked-text">E-mail</label>
+            <div class="uk-form-controls">
+              <input class="uk-input" id="form-stacked-text" type="text" placeholder="">
+            </div>
+          </div>
+          <div class="uk-margin">
+            <button class="uk-button uk-button-default" id="create-account-submit">Submit</button>  
+          </div>       
+        </form>
+      </div>
+    </div> -->
+
+    <!-- login modal -->
+    <!-- <div id="login-modal" uk-modal>
+      <div class="uk-modal-dialog uk-modal-body">
+        <h2 class="uk-modal-title">Login</h2>
+        <form class="uk-form-stacked">
+        <div class="uk-margin">
+            <label class="uk-form-label" for="form-stacked-text">Username</label>
+            <div class="uk-form-controls">
+            <input class="uk-input" id="form-stacked-text" type="text" placeholder="Username">
+            </div>
+        </div>          
+        <div class="uk-margin">
+            <label class="uk-form-label" for="form-stacked-text">Password</label>
+            <div class="uk-form-controls">
+            <input class="uk-input" id="form-stacked-text" type="text" placeholder="Password">
+            </div>
+        </div>
+        <div class="uk-margin">
+            <button class="uk-button uk-button-default" id="create-account-submit">Submit</button>  
+        </div>       
+        </form>
+      </div>
+    </div> -->
+
+    <!-- add snippet modal -->
+    <div id="add-snippet-modal" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">  
+          <h2>Add Snippet</h2>
+          
+          <form class="uk-form-stacked" method="POST">
+            <div class="uk-margin">
+              <label for="form-stacked-text">Snippet Title</label>
+              <div class="uk-form-controls">
+                <input class="uk-input form-stacked-text" id="new-snippet-name" type="text" placeholder="">
+              </div>
+            </div>          
+            
+            <div class="uk-margin">
+              <label for="form-stacked-text">Snippet Description</label>
+              <div class="uk-form-controls">
+                <input class="uk-input form-stacked-text" id="new-snippet-descrip" type="text" placeholder="">
+              </div>
+            </div>
+            
+            <div class="uk-margin">
+              <label for="form-stacked-text">Snippet Code</label>
+              <div class="uk-form-controls">
+                <textarea class="uk-textarea" id="new-snippet-code" rows="5" placeholder=""></textarea>
+              </div>
+            </div>
+            
+            <div class="uk-margin">
+              <label for="form-stacked-text">Snippet Tags (seperate by commas)</label>
+              <div class="uk-form-controls">
+                <input class="uk-input form-stacked-text" id="new-snippet-tags" type="text" placeholder="">
+              </div>
+            </div>
+  
+            <div class="uk-margin">
+              <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                  <label><input class="uk-radio" type="radio" name="private" value="true"> Public</label>
+                  <label><input class="uk-radio" type="radio" name="private" value="false"> Private</label>
+              </div>
+            </div>
+  
+            <div class="uk-margin">
+              <label for="form-stacked-text">Language / Framework</label>  
+              <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                <label><input class="uk-radio" type="radio" name="lang" value="HTML"> HTML</label>
+                <label><input class="uk-radio" type="radio" name="lang" value="CSS"> CSS</label>
+                <label><input class="uk-radio" type="radio" name="lang" value="Javascript"> Javascript</label>
+                <label><input class="uk-radio" type="radio" name="lang" value="jQuery"> jQuery</label>
+                <label><input class="uk-radio" type="radio" name="lang" value="Python"> Python</label>
+                <label><input class="uk-radio" type="radio" name="lang" value="PHP"> PHP</label>
+                <label><input class="uk-radio" type="radio" name="lang" value="C"> C</label>
+              </div>
+            </div>
+  
+            <div class="uk-margin">
+              <button id="snippet-submit">Submit</button>  
+            </div>       
+          </form>
+        </div>
+      </div>
+  
+
+  </div>
+
+  <script src = "/assets/js/code-mason.js"></script>
+</body>
+</html>

@@ -12,8 +12,154 @@
 /**************************Ajita*******************************/
 
 /**************************Taylor*******************************/
+.navbar {
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    background-color: #F85E55;
+}
+
+.navbar-button {
+    border:0px;
+    font-family: 'Roboto', sans-serif;
+    color: white;
+}
+
+.nav-search {
+    margin-left: auto;
+}
 
 
+h1 {
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    padding-top:10px;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #E2564E;
+}
+
+.side-menu-container {
+    width: 30vw;
+    padding: 25px 25px 25px 25px;
+
+}
+
+.title {
+    margin-left: 25px;
+}
+
+.side-menu {
+    background-color: white;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.1)
+}
+
+.snippets-container {
+    width: 70vw;
+    padding: 50px;
+    text-align: center;
+}
+
+.uk-card {
+    text-align: left;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 25px;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+}
+
+.uk-card-body {
+    color: white;
+    background-color: black;
+    max-height: 200px;
+    overflow: scroll;
+}
+
+pre {
+    background-color: #333333;
+    color: white;
+    text-align: left;
+    border-color: #333333;
+}
+
+#create-account-submit {
+    background-color: black;
+}
+
+.uk-form-stacked {
+    margin: 5px;
+}
+
+#snippet-submit {
+    background-color: black;
+}
+
+.uk-modal-dialog { 
+    background: #F85E55;
+    color: white;
+}
+
+.comment-card {
+    background-color: white;
+    color: #969A97;
+    margin-bottom: 10px;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+}
+
+.add-comment-card {
+    background-color: white;
+    color: #969A97;
+    margin-bottom: 10px;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+}
+
+.snippet-render-area {
+    background: #333333;
+}
+
+.render-likes-div {
+    display: flex;
+    flex-direction: column;
+    width: 60px;
+    justify-content: center;
+    align-content: center;
+}
+
+.like-button {
+    margin-bottom: 0px;
+}
+
+.total-likes {
+    margin-top: 0px;
+}
+
+#add-snippet {
+    width: 100%;
+}
+
+button {
+    background-color: #333333;
+    color: white;
+    padding: 12px;
+    border: 1px solid #333333;
+    font-size: 1.1em;
+}
+
+#user-search {
+    padding: 12px;
+    font-size: 1.1em;
+}
+
+h2 {
+    color: white;
+}
 
 
 
