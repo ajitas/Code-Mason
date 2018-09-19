@@ -249,7 +249,6 @@ app.post("/codes", function(req,res){
         text: req.body.text,
         public: req.body.public,
         likes: req.body.likes,
-        dislikes: req.body.dislikes,
         language:req.body.language,
         UserId: req.body.userID
     }).then(function(data){
@@ -294,9 +293,26 @@ app.put("/codes/code/:codeID", function(req, res) {
         description: req.body.description,
         text: req.body.text,
         public: req.body.public,
-        likes: req.body.likes,
-        dislikes: req.body.dislikes,
         language:req.body.language,
+    },{
+      where:
+      {
+        id:req.params.codeID
+      }
+    }).then(function(data){
+      if (data.changedRows == 0) {
+        // If no rows were changed, then the ID must not exist, so 404
+        return res.status(404).end();
+      } else {
+        res.status(200).end();
+      }
+    });
+  });
+
+//updates the number of likes for a code
+app.put("/code/likes/:codeID", function(req, res) {
+    db.Code.update({
+        likes: req.body.likes,
     },{
       where:
       {
@@ -327,11 +343,22 @@ app.delete("/codes/code/:codeID", function(req,res){
           res.status(200).end();
         }
       });
-}) 
+});
 
 //deletes all tags related to a code
 app.delete("/tags/code/:CodeID", function(req,res){
     db.Tag.destroy({
+        where:{
+            CodeId : req.params.codeID
+        }
+    }).then(function(data){
+        res.json({ id: data.insertId });
+    })
+});
+
+//deletes all likes related to a code
+app.delete("/likes/code/:CodeID", function(req,res){
+    db.Like.destroy({
         where:{
             CodeId : req.params.codeID
         }
