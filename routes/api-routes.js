@@ -38,6 +38,16 @@ app.get("/top10", function(req, res) {
     });
 });
 
+//get top 5 recently added codes
+app.get("/codes/latest", function(req,res){
+    db.Code.findAll({
+        order: [['updatedAt', 'DESC']],
+        limit: 5
+    }).then(function(data){
+        res.json(data);
+    });
+});
+
 //get a particular code
 app.get("/codes/code/:codeID", function(req,res){
     db.Code.findOne({
@@ -128,7 +138,7 @@ app.get("/codes/likes/:codeID", function(req,res){
     db.Code.findOne({
         attributes:['likes'],
         where: {
-            CodeId:req.params.codeID
+            id:req.params.codeID
         }
     }).then(function(data){
         res.json(data);
