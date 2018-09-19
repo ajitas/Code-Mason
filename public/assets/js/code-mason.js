@@ -141,7 +141,7 @@ $("#snippet-submit").on("click", function(){
         tagname: tags[i].trim(),
         codeID: codeID
       };
-      //send query to enter new tag
+      //send query to create new tag entry
       $.post("/tags", tag, function(){
 
       });
@@ -161,6 +161,7 @@ function onSignIn(googleUser) {
     if (res.id) {
       //set session storage with user id
       sessionStorage.setItem("userID", res.id);
+      window.location.reload();
     }
     // if user id does not exist create a new user
     else {
