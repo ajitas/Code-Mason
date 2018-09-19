@@ -286,7 +286,7 @@ app.post("/users", function(req,res){
     })
 });
 
-//lets user update his code
+//update a code
 app.put("/codes/code/:codeID", function(req, res) {
     db.Code.update({
         title: req.body.title,
@@ -348,17 +348,6 @@ app.delete("/codes/code/:codeID", function(req,res){
 //deletes all tags related to a code
 app.delete("/tags/code/:CodeID", function(req,res){
     db.Tag.destroy({
-        where:{
-            CodeId : req.params.codeID
-        }
-    }).then(function(data){
-        res.json({ id: data.insertId });
-    })
-});
-
-//deletes all likes related to a code
-app.delete("/likes/code/:CodeID", function(req,res){
-    db.Like.destroy({
         where:{
             CodeId : req.params.codeID
         }
