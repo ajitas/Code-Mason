@@ -64,7 +64,7 @@ app.get("/codes/code/:codeID", function(req,res){
     });
 });
 
-//get all comments of a particular code
+//get all comments and their commentators of a particular code
 app.get("/comments/code/:codeID", function(req,res){
     db.Comment.findAll({
         include:[db.User],
