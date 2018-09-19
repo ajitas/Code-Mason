@@ -25,21 +25,7 @@ app.get("/user/:email", function(req, res) {
         console.log(data);
         res.json(data);
     });
-});   
-
- //get user name by their ID
- app.get("/user/name/:userID", function(req, res) {
-    db.User.findOne({
-        attributes :['name'],
-       where:
-       {
-           id:req.params.userID
-       }
-    }).then(function(data){
-        console.log(data);
-        res.json(data);
-    });
-}); 
+});
 
 //get top 10 codes with maximum likes
 app.get("/top10", function(req, res) {
