@@ -304,7 +304,7 @@ $(document).on("click", ".single-snippet-link", function() {
       for (var i = 0; i < result.length; i++) {
             
             console.log(result);
-            $("#comments-container").append("<div class='uk-card uk-card-default uk-card-body comment-card'><p>"+result[i].text+"</p><p> Posted By: " + result[i].User.name + "</p></div>");
+            $("#comments-container").prepend("<div class='uk-card uk-card-default uk-card-body comment-card'><p>"+result[i].text+"</p><p> Posted By: " + result[i].User.name + "</p></div>");
       }  
     });
   }
