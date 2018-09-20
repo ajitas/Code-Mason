@@ -484,4 +484,181 @@ app.get("/search/codes/user/:userID/word/:keyword", function(req,res){
                                 }
                 },
                 {'$Tags.tagname$' :
-                                ...
+                                {
+                                    $like: '%'+req.params.keyword+'%'
+                                }
+                }
+            ]
+        },
+        include : [{
+            model: db.Tag,
+            as :'Tags'
+        }]
+    }).then(function(data){
+        res.json(data);
+    })
+}); 
+```
+Getting a user's codes that have a particular keyword in its tag or its title
+
+```
+app.get("/search/codes/language/:language", function(req,res){
+    db.Code.findAll({
+        where :
+        {
+            public : true,
+            language: req.params.language
+        }
+    }).then(function(data){
+        res.json(data);
+    });
+});
+```
+Getting all codes for a particular language
+
+```
+app.get("/search/codes/language/:language/user/:userID", function(req,res){
+    db.Code.findAll({
+        where :
+        {
+            language: req.params.language,
+            userID : req.params.userID
+        }
+    }).then(function(data){
+        res.json(data);
+    });
+});
+```
+Getting all codes for a particular language for a particular user
+
+```
+app.post("/comments", function(req,res){
+    db.Comment.create({
+        text: req.body.text,
+        CodeId: req.body.codeID,
+        UserId: req.body.userID
+    }).then(function(data){
+        res.json({ id: data.insertId });
+    });
+});
+```
+Adding a new comment with the id of the code and the user's id who has commented on it
+
+```
+app.post("/codes", function(req,res){
+    db.Code.create({
+        title: req.body.title,
+        description: req.body.description,
+        text: req.body.text,
+        public: req.body.public,
+        likes: req.body.likes,
+        language:req.body.language,
+        UserId: req.body.userID
+    }).then(function(data){
+        res.json({ id: data.insertId });
+    });
+});
+```
+Adding a new code
+
+```
+app.post("/tags", function(req,res){
+    db.Tag.create({
+        tagname: req.body.tagname,
+        CodeId : req.body.codeID
+    }).then(function(data){
+        res.json({ id: data.insertId });
+    })
+});
+```
+Adding new tag
+
+```
+app.post("/likes", function(req,res){
+    db.Like.create({
+        UserId: req.body.userID,
+        CodeId : req.body.codeID
+    }).then(function(data){
+        res.json({ id: data.insertId });
+    })
+});
+```
+Adding a new like with userid of user who liked it and the codeid that he liked.
+
+```
+app.post("/users", function(req,res){
+    db.User.create({
+        name: req.body.name,
+        email: req.body.email
+    }).then(function(data){
+        res.json({ id: data.insertId });
+    })
+});
+```
+Adding new user
+
+```
+app.put("/code/likes/:codeID", function(req, res) {
+    db.Code.update({
+        likes: db.Sequelize.literal('likes + 1'),
+    },{
+      where:
+      {
+        id:req.params.codeID
+      }
+    }).then(function(data){
+      res.json(data);
+    });
+  });
+```
+Increments the number of likes for a code
+
+```
+app.delete("/codes/code/:codeID", function(req,res){
+    db.Code.destroy({
+        where:
+        {
+          id:req.params.codeID
+        }
+      }).then(function(data){
+        if (data.affectedRows === 0) {
+          // If no rows were changed, then the ID must not exist, so 404
+          return res.status(404).end();
+        } else {
+          res.status(200).end();
+        }
+      });
+});
+```
+Deleting a particular code 
+
+
+## Learning points
+1. Creating a full stack web application.
+2. Learning how the server and client interact with requests and responses.
+3. How to create a server and how it starts listening for the clients' requests on a particular port.
+4. How the models, controllers and views interact in MVC architecture. We also used callbacks in this app for this interaction.
+5. Various types of ajax client requests i.e post,get,put,delete to database server
+6. Sending various types of responses to clients including serving an html page or sending back data as json object.
+7. How to query on database using a req.body or req.params
+8. Using sequelize package to interact with mysql server. This included creating connection, reading, updating, creating, deleting data using sequelize methods.
+9. Using Highlight.js for better user experience.
+10. Incorporating google sign-in in the appliction
+11. Deploying application on heroku.
+
+
+## Authors
+* [Ajita Srivastava Github](https://github.com/ajitas)
+* [Ajita Srivastava Portfolio](https://ajitas.github.io/Portfolio/)
+
+* [Taylor Skeels Github](https://github.com/skeeis)
+* [Taylor Skeels Portfolio](https://skeeis.github.io/Personal-Portfolio/)
+
+* [Craig Melville Github](https://github.com/acekreations)
+* [Craig Melville Portfolio](https://acekreations.github.io/Portfolio/)
+
+## License
+Standard MIT License
+
+
+
