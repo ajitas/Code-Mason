@@ -62,7 +62,6 @@ Code-Mason is a full-stack single-page application built on MVC architecture tha
 
 
 ## Code snippets
-
 ### server
 ```
 app.use(express.static("public"));
