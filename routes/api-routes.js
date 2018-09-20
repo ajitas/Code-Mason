@@ -14,14 +14,9 @@
 /**************************Taylor*******************************/
 
 
-/**************************Ajita*******************************/
 // *********************************************************************************
 // api-routes.js - this file offers a set of routes for displaying and saving data to the db
 // *********************************************************************************
-
-// Dependencies
-// =============================================================
-
 
 // Dependencies
 // =============================================================
@@ -32,20 +27,6 @@ var db = require("../models");
 // Routes
 // =============================================================
 module.exports = function(app) {
-
- //get userID by their email
-app.get("/user/:email", function(req, res) {
-    db.User.findOne({
-        attributes :['id'],
-       where:
-       {
-           email:req.params.email
-       }
-    }).then(function(data){
-        console.log(data);
-        res.json(data);
-    });
-});
 
 //get top 10 codes with maximum likes
 app.get("/top10", function(req, res) {
@@ -58,24 +39,12 @@ app.get("/top10", function(req, res) {
     });
 });
 
-//get top 5 recently added codes
-app.get("/codes/latest", function(req,res){
-    db.Code.findAll({
-        order: [['updatedAt', 'DESC']],
-        limit: 5
-    }).then(function(data){
-        res.json(data);
-    });
-});
-
-//get the likeId given a userID and codeID
-app.get("/likes/user/:userID/code/:codeID", function(req,res){
-    db.Like.findOne({
-        attributes:['id'],
-        where:
-        {
-            codeId:req.params.codeID,
-            userID:req.params.userID
+//get all comments of a particular code
+app.get("/comments/code/:codeID", function(req,res){
+    db.Comment.findAll({
+        include:[db.User],
+        where: {
+            CodeId:req.params.codeID
         }
     }).then(function(data){
         res.json(data);
@@ -90,42 +59,6 @@ app.get("/codes/code/:codeID", function(req,res){
         }
     }).then(function(data){
         console.log(data.text);
-        res.json(data);
-    });
-});
-
-//get all comments and their commentators of a particular code
-app.get("/comments/code/:codeID", function(req,res){
-    db.Comment.findAll({
-        include:[db.User],
-        where: {
-            CodeId:req.params.codeID
-        }
-    }).then(function(data){
-        res.json(data);
-    });
-});
-
-//get all languages of a particular user
-app.get("/languages/user/:userID", function(req,res){
-    db.Code.findAll({
-        attributes :[[db.Sequelize.fn('DISTINCT', db.Sequelize.col('language')) ,'language']],
-        where: {
-            UserId:req.params.userID
-        }
-    }).then(function(data){
-        res.json(data);
-    });
-});
-
-//get all languages of all users
-app.get("/languages", function(req,res){
-    db.Code.findAll({
-        attributes :[[db.Sequelize.fn('DISTINCT', db.Sequelize.col('language')) ,'language']],
-        where:{
-            public:true
-        }
-    }).then(function(data){
         res.json(data);
     });
 });
@@ -162,18 +95,6 @@ app.get("/codes/liked/user/:userID", function(req,res){
         },
         order: [['likes', 'DESC']],
         limit: 5
-    }).then(function(data){
-        res.json(data);
-    });
-});
-
-//get total likes for a particular code
-app.get("/codes/likes/:codeID", function(req,res){
-    db.Code.findOne({
-        attributes:['likes'],
-        where: {
-            id:req.params.codeID
-        }
     }).then(function(data){
         res.json(data);
     });
@@ -254,7 +175,6 @@ app.get("/search/codes/language/:language", function(req,res){
     db.Code.findAll({
         where :
         {
-            public : true,
             language: req.params.language
         }
     }).then(function(data){
@@ -294,10 +214,12 @@ app.post("/codes", function(req,res){
         text: req.body.text,
         public: req.body.public,
         likes: req.body.likes,
+        dislikes: req.body.dislikes,
         language:req.body.language,
         UserId: req.body.userID
     }).then(function(data){
-        res.json({ id: data.insertId });
+        console.log(data.id);
+        res.json({ id: data.id });
     });
 });
 
@@ -331,13 +253,15 @@ app.post("/users", function(req,res){
     })
 });
 
-//update a code
+//lets user update his code
 app.put("/codes/code/:codeID", function(req, res) {
     db.Code.update({
         title: req.body.title,
         description: req.body.description,
         text: req.body.text,
         public: req.body.public,
+        likes: req.body.likes,
+        dislikes: req.body.dislikes,
         language:req.body.language,
     },{
       where:
@@ -351,20 +275,6 @@ app.put("/codes/code/:codeID", function(req, res) {
       } else {
         res.status(200).end();
       }
-    });
-  });
-
-//increments the number of likes for a code
-app.put("/code/likes/:codeID", function(req, res) {
-    db.Code.update({
-        likes: db.Sequelize.literal('likes + 1'),
-    },{
-      where:
-      {
-        id:req.params.codeID
-      }
-    }).then(function(data){
-      res.json(data);
     });
   });
 
@@ -383,7 +293,7 @@ app.delete("/codes/code/:codeID", function(req,res){
           res.status(200).end();
         }
       });
-});
+}) 
 
 //deletes all tags related to a code
 app.delete("/tags/code/:CodeID", function(req,res){
@@ -395,10 +305,80 @@ app.delete("/tags/code/:CodeID", function(req,res){
         res.json({ id: data.insertId });
     })
 });
+
+//get all languages of a particular code
+app.get("/languages/user/:userID", function(req,res){
+    db.Code.findAll({
+        attributes :[[db.Sequelize.fn('DISTINCT', db.Sequelize.col('language')) ,'language']],
+        where: {
+            UserId:req.params.userID
+        }
+    }).then(function(data){
+        res.json(data);
+    });
+});
+
+//get all languages of all users
+app.get("/languages", function(req,res){
+    db.Code.findAll({
+        attributes :[[db.Sequelize.fn('DISTINCT', db.Sequelize.col('language')) ,'language']],
+    }).then(function(data){
+        res.json(data);
+    });
+});
+
+
+ //get user name by their ID
+ app.get("/user/name/:userID", function(req, res) {
+    db.User.findOne({
+        attributes :['name'],
+       where:
+       {
+           id:req.params.userID
+       }
+    }).then(function(data){
+        console.log(data);
+        res.json(data);
+    });
+}); 
+
+//get total likes for a particular code
+app.get("/codes/likes/:codeID", function(req,res){
+    db.Code.findOne({
+        attributes:['likes'],
+        where: {
+            Id:req.params.codeID
+        }
+    }).then(function(data){
+        res.json(data);
+    });
+});
+
+//get top 5 recently added codes
+app.get("/codes/latest", function(req,res){
+    db.Code.findAll({
+        order: [['updatedAt', 'DESC']],
+        limit: 5
+    }).then(function(data){
+        res.json(data);
+    });
+});
+
+ //get userID by their email
+ app.get("/user/:email", function(req, res) {
+    db.User.findOne({
+        attributes :['id'],
+       where:
+       {
+           email:req.params.email
+       }
+    }).then(function(data){
+        console.log(data);
+        res.json(data);
+    });
+});
+
 };
-
-
-
 
 
 
