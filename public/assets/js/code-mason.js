@@ -268,7 +268,7 @@ function renderSingleSnippet(singleSnippet){
          $(".snippets-container").empty();
          $("#comments-container").remove();
         
-        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div><div class='render-likes-div'><p class='like-button'><button type='button' data-snippetID='`+result.id+`' class='add-like icon-style'><i class='fas fa-thumbs-up fa-2x'></i></button></p><p class='total-likes'>`+result.likes+ ` Likes</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+result.text.replace(/\</g,"&lt;")+`</code></pre></p></div><div class='delete-div uk-card-footer'></div></div>`);
+        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div><div class='render-likes-div'><p class='like-button'><button type='button' data-snippetID='`+result.id+`' class='add-like icon-style'><i class='fas fa-thumbs-up fa-2x'></i></button></p><p class='total-likes'>`+result.likes+ ` Likes</p></div></div></div><div class='uk-card-body snippet-render-area single-snippet-render-area'><p><pre><code>`+result.text.replace(/\</g,"&lt;")+`</code></pre></p></div><div class='delete-div uk-card-footer'></div></div>`);
         $(".snippets-container").append('<div id="comments-container"></div>');
 
         if (parseInt(sessionStorage.getItem("userID")) === result.UserId) {
@@ -304,7 +304,7 @@ $(document).on("click", ".single-snippet-link", function() {
       for (var i = 0; i < result.length; i++) {
             
             console.log(result);
-            $("#comments-container").prepend("<div class='uk-card uk-card-default uk-card-body comment-card'><p>"+result[i].text+"</p><p> Posted By: " + result[i].User.name + "</p></div>");
+            $("#comments-container").append("<div class='uk-card uk-card-default uk-card-body comment-card'><p>"+result[i].text+"</p><p> Posted By: " + result[i].User.name + "</p></div>");
       }  
     });
   }
