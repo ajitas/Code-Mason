@@ -128,6 +128,11 @@ pre {
     background: #333333;
 }
 
+.single-snippet-render-area {
+    overflow: none;
+    max-height: none;
+}
+
 .render-likes-div {
     display: flex;
     flex-direction: column;
