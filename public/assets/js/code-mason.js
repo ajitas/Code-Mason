@@ -158,7 +158,7 @@ function onSignIn(googleUser) {
 
   //get user id
   $.get("/users/" + email, function(res){
-    if (res.id) {
+    if (res) {
       //set session storage with user id
       sessionStorage.setItem("userID", res.id);
       window.location.reload();
