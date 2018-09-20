@@ -38,7 +38,7 @@ $(document).on("click", ".language-link", function() {
     $.get("/search/codes/language/"+ language +"/user/2", function(results) {
         $(".snippets-container").empty();
         for (var i = 0; i < results.length; i++) {
-        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+results[i].title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+results[i].description+`</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+results[i].text+`</code></pre></p></div></div>`);
+        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+results[i].title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+results[i].description+`</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+results[i].text.replace(/\</g,"&lt;")+`</code></pre></p></div></div>`);
         }  
       includeHilights();    
     })
@@ -54,10 +54,10 @@ function renderUserSnippets(userID) {
         } 
   console.log(userSnippets);
     $(".snippets-container").empty();
-    $(".snippets-container").append(`<h4>Your Recent Snippets</h4>`);
+    $(".snippets-container").append(`<h4>Your Snippets</h4>`);
   
     for (var i = 0; i < userSnippets.length; i++) {
-        $(".snippets-container").append("<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'><a href='#' class='single-snippet-link' data-snippetID="+userSnippets[i].id +">" + userSnippets[i].title + "</a></h3><p class='uk-text-meta uk-margin-remove-top'>" + userSnippets[i].description + "</p></div><div class='render-likes-div'><p class='like-button'><button type='button' data-snippetID='"+userSnippets[i].id+"' class='add-like'><i class='fas fa-thumbs-up fa-3x'></i></button></p><p class='total-likes'><span class='number-of-likes'>"+userSnippets[i].likes+ "</span> Likes</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>"+userSnippets[i].text.replace(/\</g,"&lt;")+"</code></pre></p></div></div>");
+        $(".snippets-container").append("<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'><a href='#' class='single-snippet-link' data-snippetID="+userSnippets[i].id +">" + userSnippets[i].title + "</a></h3><p class='uk-text-meta uk-margin-remove-top'>" + userSnippets[i].description + "</p></div><div class='render-likes-div'><p class='total-likes'><span class='number-of-likes'>"+userSnippets[i].likes+ "</span> Likes</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>"+userSnippets[i].text.replace(/\</g,"&lt;")+"</code></pre></p></div></div>");
     }
     includeHilights();
   })
@@ -72,13 +72,24 @@ $.get("/codes/liked/user/" +userID, function(results) {
         topSnippets.push(results[i]);
       };
       
-      $(".top-snippets").html("<h4>Top Snippets</h4>" +  "<ul class=topSnippetsList style='list-style-type:none'>"
+      $(".top-snippets").html("<h4>Your Top Snippets</h4>" +  "<ul class=topSnippetsList style='list-style-type:none'>"
     + "</ul>");
     
     for (var i = 0; i < topSnippets.length; i ++) {
         $(".topSnippetsList").append("<li><a href='#' class='single-snippet-link' data-snippetID="+ topSnippets[i].id + ">" + topSnippets[i].title + "</a></li>");
     }
 })
+}
+
+function userFavoriteSnippets() {
+    var UserID = sessionStorage.getItem("userID");
+    $.get("/codes/likes/user/"+ UserID, function(results) {
+        $(".user-favorites").html("<h4>Your Liked Snippets</h4>" +  "<ul class=user-liked-snippets style='list-style-type:none'>"
+        + "</ul>");
+        for (var i = 0; i < results.length; i++) {
+          $(".user-liked-snippets").append("<li><a href='#' class='single-snippet-link' data-snippetID="+ results[i].id + ">" + results[i].title + "</a></li>");
+        }    
+    })
 }
 
 // //USER SIDE MENU TOP SNIPPETS ON CLICK LISTENER
@@ -124,7 +135,7 @@ function RenderPubliclanguages() {
       $.get("/search/codes/language/"+ language, function(results) {
           $(".snippets-container").empty();
           for (var i = 0; i < results.length; i++) {
-          $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'><a href='#' class='single-snippet-link' data-snippetID='` +results[i].id +`'>`+results[i].title+`</a></h3><p class='uk-text-meta uk-margin-remove-top'>`+results[i].description+`</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+results[i].text+`</code></pre></p></div></div>`);
+          $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'><a href='#' class='single-snippet-link' data-snippetID='` +results[i].id +`'>`+results[i].title+`</a></h3><p class='uk-text-meta uk-margin-remove-top'>`+results[i].description+`</p></div><div class='render-likes-div'><p class='total-likes'>`+results[i].likes+ ` Likes</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+results[i].text.replace(/\</g,"&lt;")+`</code></pre></p></div></div>`);
           }    
           includeHilights();
       })
@@ -145,7 +156,7 @@ function RenderPubliclanguages() {
 
       $.get("/codes/code/" + snippetID, function(result) {
         $(".snippets-container").empty();
-            $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+result.text+`</code></pre></p></div></div>`);
+            $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div><div class='render-likes-div'><p class='total-likes'>`+result.likes+ ` Likes</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+result.text.replace(/\</g,"&lt;")+`</code></pre></p></div></div>`);
             includeHilights();
       })
   })
@@ -174,7 +185,7 @@ $(document).on("click", ".liked-link", function() {
     console.log(likedID);
     $.get("/codes/code/" + likedID, function(result) {
         $(".snippets-container").empty();
-        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div></div></div><div class='uk-card-body'><p><pre><code>`+result.text+`</code></pre></p></div></div>`);
+        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div></div></div><div class='uk-card-body'><p><pre><code>`+result.text.replace(/\</g,"&lt;")+`</code></pre></p></div></div>`);
     })
 })
 
@@ -216,8 +227,9 @@ $(".add-snippet-div").html("<button id='add-snippet' type='button'>Add Snippet</
         $(".snippets-container").empty();
         $(".snippets-container").append(`<h4>Search Results</h4>`);
         for (var i = 0; i < result.length; i++) {
-          $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result[i].title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result[i].description+`</p></div></div></div><div class='uk-card-body'><p><pre><code>`+result[i].text+`</code></pre></p></div></div>`);
+            $(".snippets-container").append("<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'><a href='#' class='single-snippet-link' data-snippetID="+result[i].id +">" + result[i].title + "</a></h3><p class='uk-text-meta uk-margin-remove-top'>" + result[i].description + "</p></div><div class='render-likes-div'><p class='total-likes'>"+result[i].likes+ " Likes</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>"+result[i].text.replace(/\</g,"&lt;")+"</code></pre></p></div></div>");
         }
+        includeHilights();
     })
   })
 
@@ -249,7 +261,7 @@ function renderSingleSnippet(singleSnippet){
          $("#comments-container").remove();
         // $(".snippets-container").append(`<h4>Search Results</h4>`);
         
-        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+result.text+`</code></pre></p></div></div>`);
+        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div><div class='render-likes-div'><p class='like-button'><button type='button' data-snippetID='`+result.id+`' class='add-like'><i class='fas fa-thumbs-up fa-3x'></i></button></p><p class='total-likes'>`+result.likes+ ` Likes</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+result.text.replace(/\</g,"&lt;")+`</code></pre></p></div></div>`);
         $(".snippets-container").append('<div id="comments-container"></div>');
         renderSnippetComments(singleSnippet);
         includeHilights();
@@ -288,13 +300,11 @@ $(document).on("click", ".single-snippet-link", function() {
   $(document).on("click",".add-like", function(){
     var codeID=parseInt($(this).attr("data-snippetID"));
     var userID = parseInt(sessionStorage.getItem("userID"));
-    var currentSnippet = $(this);
     $.get("/likes/user/"+userID+"/code/"+codeID, function(result){
+        console.log("LIKE RESULT" , result);
         if(!result){
-            $.ajax("/likes", {
-                type: "POST",
-                data:{userID:userID, codeID:codeID}
-            }).then(function() {
+            var newLikeObj = {userID:userID, codeID:codeID}
+            $.post("/likes", newLikeObj, function() {
                 $.ajax("/code/likes/"+codeID, {
                     type: "PUT"
                 }).then(function() {
@@ -320,6 +330,7 @@ $(document).on("click", ".single-snippet-link", function() {
       sidebarSnippetSearch(userID);
       userTopSnippets(userID);
       languageSort(userID);
+      userFavoriteSnippets();
     }
     
     else {
