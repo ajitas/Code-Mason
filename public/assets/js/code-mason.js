@@ -215,7 +215,7 @@ $(document).on("click", "#search", function() {
 //SIDE BAR ADD SNIPPET RENDER
 function renderAddSnippet() {
 
-$(".add-snippet-div").html("<button id='add-snippet' type='button'>Add Snippet</button>");
+$(".add-snippet-div").html("<button id='add-snippet' type='button'><i class='fas fa-plus'></i>  Add Snippet</button>");
 }
 
 //NAV BAR SEARCH ALL SITE ON CLICK LISTENER
@@ -232,6 +232,16 @@ $(".add-snippet-div").html("<button id='add-snippet' type='button'>Add Snippet</
         includeHilights();
     })
   })
+
+  //NAV BAR LOG IN HIDE
+  function logInHide() {
+    $(".g-signin2").hide();
+  }
+
+  //NAV BAR LOG OUT HIDE
+  function logOutShow() {
+      $(".sign-out-button").show();
+  }
 
 
 /****** PUBLIC PAGE TOP SNIPPETS FOR MAIN CONTENT ********/
@@ -341,13 +351,15 @@ $(document).on("click", ".single-snippet-link", function() {
   function renderPageCheck() { 
     if (sessionStorage.getItem("userID")) {
         var userID = sessionStorage.getItem("userID");
-        console.log(userID);
+      $(".recent-snippets").empty();
       renderUserSnippets(userID);
       renderAddSnippet();
       sidebarSnippetSearch(userID);
       userTopSnippets(userID);
       languageSort(userID);
       userFavoriteSnippets();
+      logInHide();
+      logOutShow();
     }
     
     else {
