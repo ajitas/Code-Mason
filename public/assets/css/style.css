@@ -12,9 +12,7 @@
 /**************************Ajita*******************************/
 
 /**************************Taylor*******************************/
-body {
-    min-height: 100vh;
-}
+
 
 .navbar {
     
@@ -44,6 +42,7 @@ h1 {
 }
 
 .main-content {
+    min-height: 100vh;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -201,6 +200,10 @@ h2 {
     color: white;
     margin-right: 15px;
     background-color: #F85E55;
+}
+
+.g-signin2 {
+    margin-right: 25px;
 }
 
 

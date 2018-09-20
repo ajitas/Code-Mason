@@ -208,6 +208,12 @@ app.get("/search/codes/word/:keyword", function(req,res){
                                  {
                                     $like: '%'+req.params.keyword+'%'
                                  }
+                },
+                {
+                   description: 
+                                {
+                                    $like: '%'+req.params.keyword+'%'
+                                }
                 }
             ]
         }
@@ -231,7 +237,13 @@ app.get("/search/codes/user/:userID/word/:keyword", function(req,res){
                                 {
                                     $like: '%'+req.params.keyword+'%'
                                 }
-                }
+                },
+                {
+                    description: 
+                                 {
+                                     $like: '%'+req.params.keyword+'%'
+                                 }
+                 }
             ]
         },
         include : [{
