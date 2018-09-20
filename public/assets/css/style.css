@@ -12,6 +12,10 @@
 /**************************Ajita*******************************/
 
 /**************************Taylor*******************************/
+body {
+    min-height: 100vh;
+}
+
 .navbar {
     
     display: flex;
@@ -57,6 +61,7 @@ h1 {
 }
 
 .side-menu {
+    margin-top: 70px;
     background-color: white;
     box-shadow: 0px 3px 10px rgba(0,0,0,0.1)
 }
@@ -140,8 +145,14 @@ pre {
     margin-top: 0px;
 }
 
+.add-snippet-div {
+    text-align: center;
+    padding: 15px;
+}
+
 #add-snippet {
     width: 100%;
+
 }
 
 button {
@@ -158,6 +169,10 @@ button {
     font-size: 1.1em;
 }
 
+.user-snippet-search {
+    margin-bottom: 15px;
+}
+
 h2 {
     color: white;
 }
@@ -171,6 +186,21 @@ h2 {
     padding: 0px;
     color: #E2564E;
     border: none;
+}
+
+.sign-out-button {
+    border:0px;
+    font-family: 'Roboto', sans-serif;
+    color: white;
+    margin-right: 15px;
+}
+
+.sign-out-style {
+    border:0px;
+    font-family: 'Roboto', sans-serif;
+    color: white;
+    margin-right: 15px;
+    background-color: #F85E55;
 }
 
 
