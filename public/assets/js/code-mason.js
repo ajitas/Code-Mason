@@ -259,14 +259,30 @@ function renderSingleSnippet(singleSnippet){
         console.log("SINGLE SNIPPET RESULT: " , result);
          $(".snippets-container").empty();
          $("#comments-container").remove();
-        // $(".snippets-container").append(`<h4>Search Results</h4>`);
         
-        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div><div class='render-likes-div'><p class='like-button'><button type='button' data-snippetID='`+result.id+`' class='add-like'><i class='fas fa-thumbs-up fa-3x'></i></button></p><p class='total-likes'>`+result.likes+ ` Likes</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+result.text.replace(/\</g,"&lt;")+`</code></pre></p></div></div>`);
+        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div><div class='render-likes-div'><p class='like-button'><button type='button' data-snippetID='`+result.id+`' class='add-like icon-style'><i class='fas fa-thumbs-up fa-2x'></i></button></p><p class='total-likes'>`+result.likes+ ` Likes</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+result.text.replace(/\</g,"&lt;")+`</code></pre></p></div><div class='delete-div uk-card-footer'></div></div>`);
         $(".snippets-container").append('<div id="comments-container"></div>');
+
+        if (parseInt(sessionStorage.getItem("userID")) === result.UserId) {
+          $(".delete-div").html("<button type='button' data-snippetID='"+ result.id +"' class='delete-snippet icon-style'><i class='fas fa-trash-alt'></i></button>")  
+        }
+        else {
+          $(".delete-div").hide();
+        }
         renderSnippetComments(singleSnippet);
         includeHilights();
     })
 }
+
+$(document).on("click", ".delete-snippet", function() {
+   var codeID = $(this).attr("data-snippetID");
+    $.ajax("/codes/code/"+codeID, {
+        type: "DELETE"
+    }).then(function() {
+        window.location.href="/";
+    });
+})
+
 $(document).on("click", ".single-snippet-link", function() {
   renderSingleSnippet(parseInt($(this).attr("data-snippetID")));
   })
@@ -309,6 +325,7 @@ $(document).on("click", ".single-snippet-link", function() {
                     type: "PUT"
                 }).then(function() {
                     renderSingleSnippet(codeID);
+                    userFavoriteSnippets();
                 });
             });
         }

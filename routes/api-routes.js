@@ -179,6 +179,7 @@ app.get("/codes/likes/user/:userID", function(req,res){
                 model: db.Like,
                 as: 'Likes'
         }],
+        order: [['updatedAt', 'DESC']],
         where :
                 {
                     '$Likes.UserId$': req.params.userID
