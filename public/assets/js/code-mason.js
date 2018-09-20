@@ -93,6 +93,11 @@ $.get("/codes/liked/user/" +userID, function(results) {
     
 // })
 
+//MODAL BUTTON WORK AROUND
+var modal = UIkit.modal("#add-snippet-modal");
+$(document).on('click','#add-snippet', function() {
+  modal.toggle();
+});
 
 //PUBLIC PAGE SIDE BAR RENDERING
 function RenderPubliclanguages() {
@@ -196,10 +201,10 @@ $(document).on("click", "#search", function() {
 
 
 
-//NAV BAR ADD SNIPPET RENDER
+//SIDE BAR ADD SNIPPET RENDER
 function renderAddSnippet() {
 
-$(".add-snippet").html("<button id='add-snippet' type='button' uk-toggle='target: #add-snippet-modal'>Add Snippet</button>");
+$(".add-snippet-div").html("<button id='add-snippet' type='button'>Add Snippet</button>");
 }
 
 //NAV BAR SEARCH ALL SITE ON CLICK LISTENER
