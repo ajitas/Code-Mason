@@ -191,7 +191,7 @@ $(document).on("click", ".liked-link", function() {
 
 //USER SIDE BAR SEARCH OWN SNIPPETS
 function sidebarSnippetSearch(userID) {
-  $(".user-snippet-search").html("<input id='user-search' data-user=" +userID+ "type='text' placeholder='Search Your Snippets'></input>" + "<button id='search'>Search</button>");
+  $(".user-snippet-search").html("<div class='uk-button-group'><input id='user-search' data-user=" +userID+ "type='text' placeholder='Search Your Snippets'></input>" + "<button id='search'>Search</button></div>");
 }
 
 //USER SIDE BAR SEARCH OWN SNIPPETS ON CLICK LISTENER AND RESULTS GENERATION IN MAIN CONTENT
@@ -209,8 +209,6 @@ $(document).on("click", "#search", function() {
       }
   })
 })
-
-
 
 //SIDE BAR ADD SNIPPET RENDER
 function renderAddSnippet() {
