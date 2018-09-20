@@ -91,8 +91,7 @@ app.get("/codes/code/:codeID", function(req,res){
 //get all comments and their commentators of a particular code
 app.get("/comments/code/:codeID", function(req,res){
     db.Comment.findAll({
-        include:[db.User],
-        order:['createdAt','DESC'],
+        include :[db.User],
         where: {
             CodeId:req.params.codeID
         }
