@@ -92,6 +92,7 @@ app.get("/codes/code/:codeID", function(req,res){
 app.get("/comments/code/:codeID", function(req,res){
     db.Comment.findAll({
         include:[db.User],
+        order:['createdAt','DESC'],
         where: {
             CodeId:req.params.codeID
         }
