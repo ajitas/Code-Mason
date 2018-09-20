@@ -341,7 +341,7 @@ $(document).on("click", ".single-snippet-link", function() {
 /**************************Craig*******************************/
 
 //add new snippet and tags on click of modal submit button
-$("#snippet-submit").on("click", function(){
+$(document).on("click", "#snippet-submit", function(){
     //create object from form inputs
     var newSnippet = {
       title: $("#new-snippet-name").val().trim(),
@@ -350,14 +350,14 @@ $("#snippet-submit").on("click", function(){
       public: $("input:radio[name='private']:checked").val(),
       language: $("input:radio[name='lang']:checked").val(),
       userID: parseInt(sessionStorage.getItem("userID"))
-
     };
-    console.log(newSnippet);
+
+    console.log("newSnippet");
     // get the comma seperated tag value
     var tags = $("#new-snippet-tags").val().trim();
     //split by comma into an array
     tags = tags.split(",");
-  
+    console.log(newSnippet);
     //query api to create new code snippet entry
     $.post("/codes", newSnippet, function(res){
       //new code snippet id returned from query
