@@ -10,10 +10,16 @@ Code-Mason is a full-stack single-page application built on MVC architecture tha
 ## Application Preview
 
 ### User Not Signed-In
-![Code-Mason-NotSignedIn]()
+![Code-Mason-NotSignedIn](public/assets/img/notsignedin.png)
 
 ### User Signed-In
-![Code-Mason-SignedIn]()
+![Code-Mason-SignedIn](public/assets/img/signedin.png)
+
+### User Add Snippet Modal
+![Code-Mason-Add-Snippet](public/assets/img/addsnippet.png)
+
+### Single Snippet View with Comments
+![Code-Mason-Single-Snippet-Comments](public/assets/img/comments.png)
 
 ## Technologies used
 1. HTML5
