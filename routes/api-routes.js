@@ -55,6 +55,10 @@ app.get("/top10", function(req, res) {
 //get top 5 recently added codes
 app.get("/codes/latest", function(req,res){
     db.Code.findAll({
+        where :
+        {
+            public:true
+        },
         order: [['updatedAt', 'DESC']],
         limit: 5
     }).then(function(data){
