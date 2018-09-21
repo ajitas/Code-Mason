@@ -26,13 +26,13 @@ $.get("/languages/user/"+ userID, function(results) {
   + "</ul>")
 
   for (var i = 0; i < languages.length; i ++) {
-    $(".languageSortList").append("<li><a href='#' data-lang='"+ languages[i].language + "' class='language-link'>" + languages[i].language + "</a></li>")
+    $(".languageSortList").append("<li><a href='#' data-lang='"+ languages[i].language + "' class='user-language-link'>" + languages[i].language + "</a></li>")
   }
 })
 }
 
 //USER SIDE BAR LANGUAGES ON CLICK LISTENER
-$(document).on("click", ".language-link", function() {
+$(document).on("click", ".user-language-link", function() {
     var language = $(this).attr("data-lang");
     var userID = sessionStorage.getItem("userID");
     console.log(language);
@@ -110,8 +110,9 @@ function sidebarSnippetSearch(userID) {
         $(".snippets-container").append(`<h4>Search Results</h4>`);
   
         for (var i = 0; i < result.length; i++) {
-          $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result[i].title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result[i].description+`</p></div></div></div><div class='uk-card-body'><p><pre><code>`+result[i].text+`</code></pre></p></div></div>`);
+          $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result[i].title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result[i].description+`</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+result[i].text+`</code></pre></p></div></div>`);
         }
+        includeHilights();
     })
   })
 
@@ -166,7 +167,8 @@ function RenderPubliclanguages() {
           for (var i = 0; i < result.length; i ++) {
             $(".sidebarRecentSnippets").append("<li><a href='#' data-snippetID='"+ result[i].id + "' class='recent-snippets-link'>" + result[i].title + "</a></li>")
           }
-      })
+      
+        })
   }
 
   //SIDE MENU PUBLIC PAGE ON CLICK LISTENER FOR MOST RECENT SNIPPETS & RENDER TO MAIN SNIPPETS CONTAINER
@@ -175,8 +177,11 @@ function RenderPubliclanguages() {
 
       $.get("/codes/code/" + snippetID, function(result) {
         $(".snippets-container").empty();
-            $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div><div class='render-likes-div'><p class='total-likes'>`+result.likes+ ` Likes</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+result.text.replace(/\</g,"&lt;")+`</code></pre></p></div></div>`);
+            // $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div><div class='render-likes-div'><p class='total-likes'>`+result.likes+ ` Likes</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+result.text.replace(/\</g,"&lt;")+`</code></pre></p></div></div>`);
+            renderSingleSnippet(snippetID);
             includeHilights();
+            console.log("SIDE MENU SNIPPET ID BUG 3 FIX", snippetID);
+            renderSnippetComments(parseInt(snippetID));
       })
   })
 
@@ -226,26 +231,30 @@ function renderTopSnippets(cb) {
 
 };
 
-//ANY TIME WE RENDER A SINGLE SNIPPET VIEW
 function renderSingleSnippet(singleSnippet){
-    $.get("/codes/code/" + singleSnippet, function(result) {
-        console.log("SINGLE SNIPPET RESULT: " , result);
-         $(".snippets-container").empty();
-         $("#comments-container").remove();
-        
+  $.get("/codes/code/" + singleSnippet, function(result) {
+      console.log("SINGLE SNIPPET RESULT: " , result);
+       $(".snippets-container").empty();
+       $("#comments-container").remove();
+      
+  if(sessionStorage.getItem("userID"))
         $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div><div class='render-likes-div'><p class='like-button'><button type='button' data-snippetID='`+result.id+`' class='add-like icon-style'><i class='fas fa-thumbs-up fa-2x'></i></button></p><p class='total-likes'>`+result.likes+ ` Likes</p></div></div></div><div class='uk-card-body snippet-render-area single-snippet-render-area'><p><pre><code>`+result.text.replace(/\</g,"&lt;")+`</code></pre></p></div><div class='delete-div uk-card-footer'></div></div>`);
-        $(".snippets-container").append('<div id="comments-container"></div>');
+  else
+    $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div><div class='render-likes-div'><p class='total-likes'>`+result.likes+ ` Likes</p></div></div></div><div class='uk-card-body snippet-render-area single-snippet-render-area'><p><pre><code>`+result.text.replace(/\</g,"&lt;")+`</code></pre></p></div><div class='delete-div uk-card-footer'></div></div>`);
+    
+      $(".snippets-container").append('<div id="comments-container"></div>');
 
-        if (parseInt(sessionStorage.getItem("userID")) === result.UserId) {
-          $(".delete-div").html("<button type='button' data-snippetID='"+ result.id +"' class='delete-snippet icon-style'><i class='fas fa-trash-alt'></i></button>")  
-        }
-        else {
-          $(".delete-div").hide();
-        }
-        renderSnippetComments(singleSnippet);
-        includeHilights();
-    })
+      if (parseInt(sessionStorage.getItem("userID")) === result.UserId) {
+        $(".delete-div").html("<button type='button' data-snippetID='"+ result.id +"' class='delete-snippet icon-style'><i class='fas fa-trash-alt'></i></button>")  
+      }
+      else {
+        $(".delete-div").hide();
+      }
+      renderSnippetComments(singleSnippet);
+      includeHilights();
+  })
 }
+
 
 //ON CLICK LISTENER FOR DELETING A SNIPPET
 $(document).on("click", ".delete-snippet", function() {
