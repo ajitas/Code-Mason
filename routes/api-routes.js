@@ -209,6 +209,11 @@ app.get("/search/codes/word/:keyword", function(req,res){
                                     $like: '%'+req.params.keyword+'%'
                                 }
                 },
+                {language : 
+                                {
+                                    $like: '%'+req.params.keyword+'%'
+                                }
+                },
                 {'$Tags.tagname$' :
                                  {
                                     $like: '%'+req.params.keyword+'%'
