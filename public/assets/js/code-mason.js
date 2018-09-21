@@ -39,7 +39,7 @@ $(document).on("click", ".user-language-link", function() {
     $.get("/search/codes/language/"+ language +"/user/" + userID, function(results) {
         $(".snippets-container").empty();
         for (var i = 0; i < results.length; i++) {
-        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+results[i].title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+results[i].description+`</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+results[i].text.replace(/\</g,"&lt;")+`</code></pre></p></div></div>`);
+        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'><a href='#' class='single-snippet-link' data-snippetID='` +results[i].id +`'>`+results[i].title+`</a></h3><p class='uk-text-meta uk-margin-remove-top'>`+results[i].description+`</p></div><div class='render-likes-div'><p class='total-likes'>`+results[i].likes+ ` Likes</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>`+results[i].text.replace(/\</g,"&lt;")+`</code></pre></p></div></div>`);
         }  
       includeHilights();    
     })
