@@ -629,8 +629,56 @@ app.delete("/codes/code/:codeID", function(req,res){
       });
 });
 ```
-Deleting a particular code 
+When the page loads one function checks if a user is logged in & then calls the appropriate functions to render the public or user page
+```
+$(document).ready(function() {
+    renderPageCheck(); 
+})
+```
+```
+function renderPageCheck() { 
+if (sessionStorage.getItem("userID")) {
+    var userID = sessionStorage.getItem("userID");
+    $(".recent-snippets").empty();
+    renderUserSnippets(userID);
+    renderAddSnippet();
+    sidebarSnippetSearch(userID);
+    userTopSnippets(userID);
+    languageSort(userID);
+    userFavoriteSnippets();
+    logInHide();
+    logOutShow();
+}
 
+else {
+    renderTopSnippets(includeHilights);
+    RenderPubliclanguages();
+    publicRecentSnippets();
+}
+} 
+```
+One example of our dynamically generated content
+```
+function renderSingleSnippet(singleSnippet){
+    $.get("/codes/code/" + singleSnippet, function(result) {
+        console.log("SINGLE SNIPPET RESULT: " , result);
+         $(".snippets-container").empty();
+         $("#comments-container").remove();
+        
+        $(".snippets-container").append(`<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'>`+result.title+`</h3><p class='uk-text-meta uk-margin-remove-top'>`+result.description+`</p></div><div class='render-likes-div'><p class='like-button'><button type='button' data-snippetID='`+result.id+`' class='add-like icon-style'><i class='fas fa-thumbs-up fa-2x'></i></button></p><p class='total-likes'>`+result.likes+ ` Likes</p></div></div></div><div class='uk-card-body snippet-render-area single-snippet-render-area'><p><pre><code>`+result.text.replace(/\</g,"&lt;")+`</code></pre></p></div><div class='delete-div uk-card-footer'></div></div>`);
+        $(".snippets-container").append('<div id="comments-container"></div>');
+
+        if (parseInt(sessionStorage.getItem("userID")) === result.UserId) {
+          $(".delete-div").html("<button type='button' data-snippetID='"+ result.id +"' class='delete-snippet icon-style'><i class='fas fa-trash-alt'></i></button>")  
+        }
+        else {
+          $(".delete-div").hide();
+        }
+        renderSnippetComments(singleSnippet);
+        includeHilights();
+    })
+}
+```
 
 ## Learning points
 1. Creating a full stack web application.
