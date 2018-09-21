@@ -54,7 +54,7 @@ Code-Mason is a full-stack single-page application built on MVC architecture tha
 1. Make sure node is installed on your machine. You can visit the website [Node Installation](http://blog.teamtreehouse.com/install-node-js-npm-mac) for instructions.
 2. Download/Clone the respository.
 3. On terminal, go inside Code-Mason folder and type npm install. This will install all the dependencies required to run the application mentioned in package.json.
-4. Make sure mysql is installed on the localhost/other server. 
+4. Make sure mysql is installed on the localhost/other server.
 5. Log into mysql workbench and execute db/schema.sql from the repository. This will create the database on the server.
 6. Open config.json and change development.user, development.password with your values.
 7. Inside Code-Mason folder on terminal, type "node server.js" on terminal. This will start the server.
@@ -170,7 +170,7 @@ var Tag = sequelize.define("Tag", {
 #### Like
 ```
  var Like = sequelize.define("Like", {
-    
+
 });
 ```
 
@@ -255,14 +255,42 @@ Like.associate = function (models) {
 ```
 
 ### view
-When the page loads one function checks if a user is logged in & then calls the appropriate functions to render the public or user page
+When a user is created, logs in, or is currently logged in this Google Sign In function runs to verify the login and then calls the renderPageCheck function.
+
+```
+function onSignIn(googleUser) {
+  //user data from google sign in
+  var profile = googleUser.getBasicProfile();
+  var name = profile.getName();
+  var email = profile.getEmail();
+
+  //get user id
+  $.get("/user/" + email, function(res){  
+    if (res) {
+      //set session storage with user id
+      sessionStorage.setItem("userID", res.id);
+      renderPageCheck();
+    }
+    // if user id does not exist create a new user
+    else {
+      $.post("/users", {name: name, email: email}, function(res){
+        //set session storage with user id
+        sessionStorage.setItem("userID", res.id);
+        window.location.reload();
+      });
+    }
+  });
+}
+```
+
+When the page loads this function checks if a user is logged in & then calls the appropriate functions to render the public or user page
 ```
 $(document).ready(function() {
-    renderPageCheck(); 
+    renderPageCheck();
 })
 ```
 ```
-function renderPageCheck() { 
+function renderPageCheck() {
 if (sessionStorage.getItem("userID")) {
     var userID = sessionStorage.getItem("userID");
     $(".recent-snippets").empty();
@@ -281,7 +309,7 @@ else {
     RenderPubliclanguages();
     publicRecentSnippets();
 }
-} 
+}
 ```
 One example of our dynamically generated content
 ```
@@ -290,7 +318,7 @@ function renderSingleSnippet(singleSnippet){
         console.log("SINGLE SNIPPET RESULT: " , result);
          $(".snippets-container").empty();
          $("#comments-container").remove();
-        
+
         $(".snippets-container").append(`<div class='uk-card uk-card-default'>
                                             <div class='uk-card-header'>
                                                 <div class='uk-grid-small uk-flex-middle' uk-grid>
@@ -403,4 +431,330 @@ app.get("/codes/code/:codeID", function(req,res){
 
 Getting all comments and their commentators of a particular code
 ```
-app.get("/comments/code/:codeID", function(req,re...
+app.get("/comments/code/:codeID", function(req,res){
+    db.Comment.findAll({
+        include:[db.User],
+        where: {
+            CodeId:req.params.codeID
+        }
+    }).then(function(data){
+        res.json(data);
+    });
+});
+```
+
+Getting all languages used by a particular user
+```
+app.get("/languages/user/:userID", function(req,res){
+    db.Code.findAll({
+        attributes :[[db.Sequelize.fn('DISTINCT', db.Sequelize.col('language')) ,'language']],
+        where: {
+            UserId:req.params.userID
+        }
+    }).then(function(data){
+        res.json(data);
+    });
+});
+```
+
+Getting list of all distinct languages used by all users
+```
+app.get("/languages", function(req,res){
+    db.Code.findAll({
+        attributes :[[db.Sequelize.fn('DISTINCT', db.Sequelize.col('language')) ,'language']],
+        where:{
+            public:true
+        }
+    }).then(function(data){
+        res.json(data);
+    });
+});
+```
+
+Getting all codes of a particular user
+```
+app.get("/codes/user/:userID", function(req,res){
+    db.Code.findAll({
+        where: {
+            UserId:req.params.userID
+        }
+    }).then(function(data){
+        res.json(data);
+    });
+});
+```
+
+Getting 5 most recently modified codes of a particular user
+```
+app.get("/codes/latest/user/:userID", function(req,res){
+    db.Code.findAll({
+        where: {
+            UserId:req.params.userID
+        },
+        order: [['updatedAt', 'DESC']],
+        limit: 5
+    }).then(function(data){
+        res.json(data);
+    });
+});
+```
+
+Getting 5 most liked codes of a particular user
+```
+app.get("/codes/liked/user/:userID", function(req,res){
+    db.Code.findAll({
+        where: {
+            UserId:req.params.userID
+        },
+        order: [['likes', 'DESC']],
+        limit: 5
+    }).then(function(data){
+        res.json(data);
+    });
+});
+```
+
+Getting total likes for a particular code
+```
+app.get("/codes/likes/:codeID", function(req,res){
+    db.Code.findOne({
+        attributes:['likes'],
+        where: {
+            id:req.params.codeID
+        }
+    }).then(function(data){
+        res.json(data);
+    });
+});
+```
+
+Getting all the codes that a particular user has liked
+```
+app.get("/codes/likes/user/:userID", function(req,res){
+    db.Code.findAll({
+        include :[{
+                model: db.Like,
+                as: 'Likes'
+        }],
+        where :
+                {
+                    '$Likes.UserId$': req.params.userID
+                }
+    }).then(function(data){
+        res.json(data);
+    });
+});
+```
+
+Getting all codes that have a particular keyword in its tag or title
+```
+app.get("/search/codes/word/:keyword", function(req,res){
+    db.Code.findAll({
+        include : [{
+            model: db.Tag,
+            as :'Tags'
+        }],
+        where: {
+            public : true,
+            $or: [
+                {title :
+                                {
+                                    $like: '%'+req.params.keyword+'%'
+                                }
+                },
+                {'$Tags.tagname$' :
+                                 {
+                                    $like: '%'+req.params.keyword+'%'
+                                 }
+                }
+            ]
+        }
+    }).then(function(data){
+        res.json(data);
+    })
+});
+```
+
+Getting a user's codes that have a particular keyword in its tag or its title
+```
+app.get("/search/codes/user/:userID/word/:keyword", function(req,res){
+    db.Code.findAll({
+        where: {
+            UserId:req.params.userID,
+            $or: [
+                {title :
+                                {
+                                    $like: '%'+req.params.keyword+'%'
+                                }
+                },
+                {'$Tags.tagname$' :
+                                {
+                                    $like: '%'+req.params.keyword+'%'
+                                }
+                }
+            ]
+        },
+        include : [{
+            model: db.Tag,
+            as :'Tags'
+        }]
+    }).then(function(data){
+        res.json(data);
+    })
+});
+```
+
+Getting all codes for a particular language
+```
+app.get("/search/codes/language/:language", function(req,res){
+    db.Code.findAll({
+        where :
+        {
+            public : true,
+            language: req.params.language
+        }
+    }).then(function(data){
+        res.json(data);
+    });
+});
+```
+
+Getting all codes for a particular language for a particular user
+```
+app.get("/search/codes/language/:language/user/:userID", function(req,res){
+    db.Code.findAll({
+        where :
+        {
+            language: req.params.language,
+            userID : req.params.userID
+        }
+    }).then(function(data){
+        res.json(data);
+    });
+});
+```
+
+Adding a new comment with the id of the code and the user's id who has commented on it
+```
+app.post("/comments", function(req,res){
+    db.Comment.create({
+        text: req.body.text,
+        CodeId: req.body.codeID,
+        UserId: req.body.userID
+    }).then(function(data){
+        res.json({ id: data.insertId });
+    });
+});
+```
+
+Adding a new code
+```
+app.post("/codes", function(req,res){
+    db.Code.create({
+        title: req.body.title,
+        description: req.body.description,
+        text: req.body.text,
+        public: req.body.public,
+        likes: req.body.likes,
+        language:req.body.language,
+        UserId: req.body.userID
+    }).then(function(data){
+        res.json({ id: data.insertId });
+    });
+});
+```
+
+Adding new tag
+```
+app.post("/tags", function(req,res){
+    db.Tag.create({
+        tagname: req.body.tagname,
+        CodeId : req.body.codeID
+    }).then(function(data){
+        res.json({ id: data.insertId });
+    })
+});
+```
+
+Adding a new like with userid of user who liked it and the codeid that he liked.
+```
+app.post("/likes", function(req,res){
+    db.Like.create({
+        UserId: req.body.userID,
+        CodeId : req.body.codeID
+    }).then(function(data){
+        res.json({ id: data.insertId });
+    })
+});
+```
+
+Adding new user
+```
+app.post("/users", function(req,res){
+    db.User.create({
+        name: req.body.name,
+        email: req.body.email
+    }).then(function(data){
+        res.json({ id: data.insertId });
+    })
+});
+```
+
+Increments the number of likes for a code
+```
+app.put("/code/likes/:codeID", function(req, res) {
+    db.Code.update({
+        likes: db.Sequelize.literal('likes + 1'),
+    },{
+      where:
+      {
+        id:req.params.codeID
+      }
+    }).then(function(data){
+      res.json(data);
+    });
+  });
+```
+
+Deletes a code
+```
+app.delete("/codes/code/:codeID", function(req,res){
+    db.Code.destroy({
+        where:
+        {
+          id:req.params.codeID
+        }
+      }).then(function(data){
+        if (data.affectedRows === 0) {
+          // If no rows were changed, then the ID must not exist, so 404
+          return res.status(404).end();
+        } else {
+          res.status(200).end();
+        }
+      });
+});
+```
+
+## Learning points
+1. Creating a full stack web application.
+2. Learning how the server and client interact with requests and responses.
+3. How to create a server and how it starts listening for the clients' requests on a particular port.
+4. How the models, controllers and views interact in MVC architecture. We also used callbacks in this app for this interaction.
+5. Various types of ajax client requests i.e post,get,put,delete to database server
+6. Sending various types of responses to clients including serving an html page or sending back data as json object.
+7. How to query on database using a req.body or req.params
+8. Using sequelize package to interact with mysql server. This included creating connection, reading, updating, creating, deleting data using sequelize methods.
+9. Using Highlight.js for better user experience.
+10. Incorporating google sign-in in the appliction
+11. Deploying application on heroku.
+
+
+## Authors
+* [Ajita Srivastava Github](https://github.com/ajitas)  |  [Ajita Srivastava Portfolio](https://ajitas.github.io/Portfolio/)
+
+* [Taylor Skeels Github](https://github.com/skeeis)  |  [Taylor Skeels Portfolio](https://skeeis.github.io/Personal-Portfolio/)
+
+* [Craig Melville Github](https://github.com/acekreations)  |  [Craig Melville Portfolio](https://acekreations.github.io/Portfolio/)
+
+## License
+Standard MIT License
