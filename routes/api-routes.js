@@ -44,6 +44,10 @@ app.get("/user/:email", function(req, res) {
 //get top 10 codes with maximum likes
 app.get("/top10", function(req, res) {
     db.Code.findAll({
+		where :
+			{
+				public:true
+			},
         order: [['likes', 'DESC']],
         limit: 10
     }).then(function(data){

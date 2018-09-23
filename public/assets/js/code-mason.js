@@ -220,7 +220,7 @@ function renderTopSnippets(cb) {
       topSnippets.push({id: results[i].id, title:results[i].title, description:results[i].description, snippet:results[i].text, likes: results[i].likes});
     } 
   
-    $(".snippets-container").append(`<h4>Top Snippets</h4>`);
+    $(".snippets-container").append(`<h4 id='top-snippets-title'>Top Snippets</h4>`);
    
     for (var i = 0; i < topSnippets.length; i++) {
       $(".snippets-container").append("<div class='uk-card uk-card-default'><div class='uk-card-header'><div class='uk-grid-small uk-flex-middle' uk-grid><div class='uk-width-expand'><h3 class='uk-card-title uk-margin-remove-bottom'><a href='#' class='single-snippet-link' data-snippetID="+topSnippets[i].id +">" + topSnippets[i].title + "</a></h3><p class='uk-text-meta uk-margin-remove-top'>" + topSnippets[i].description + "</p></div><div class='render-likes-div'><p class='total-likes'>"+topSnippets[i].likes+ " Likes</p></div></div></div><div class='uk-card-body snippet-render-area'><p><pre><code>"+topSnippets[i].snippet.replace(/\</g,"&lt;")+"</code></pre></p></div></div>");
