@@ -228,7 +228,13 @@ app.get("/search/codes/word/:keyword", function(req,res){
                                 {
                                     $like: '%'+req.params.keyword+'%'
                                 }
-                }
+                },
+                {
+                    text: 
+                                 {
+                                     $like: '%'+req.params.keyword+'%'
+                                 }
+                 }
             ]
         }
     }).then(function(data){
@@ -254,6 +260,12 @@ app.get("/search/codes/user/:userID/word/:keyword", function(req,res){
                 },
                 {
                     description: 
+                                 {
+                                     $like: '%'+req.params.keyword+'%'
+                                 }
+                 },
+                 {
+                    text: 
                                  {
                                      $like: '%'+req.params.keyword+'%'
                                  }
