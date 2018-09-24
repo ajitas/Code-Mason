@@ -215,6 +215,11 @@ h2 {
     margin-top: 0px;
 }
 
+.user-liked-snippets {
+    max-height:25vh;
+    overflow:scroll;
+}
+
 
 
 
