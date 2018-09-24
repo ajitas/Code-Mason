@@ -317,7 +317,7 @@ app.post("/codes", function(req,res){
         language:req.body.language,
         UserId: req.body.userID
     }).then(function(data){
-        res.json({ id: data.insertId });
+        res.json({ id: data.id });
     });
 });
 

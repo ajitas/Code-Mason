@@ -358,7 +358,9 @@ $(document).ready(function() {
 /**************************Craig*******************************/
 
 //add new snippet and tags on click of modal submit button
-$(document).on("click", "#snippet-submit", function(){
+$(document).on("click", "#snippet-submit", function(event){
+  event.preventDefault();
+  modal.toggle();
     //create object from form inputs
     var newSnippet = {
       title: $("#new-snippet-name").val().trim(),
@@ -368,31 +370,44 @@ $(document).on("click", "#snippet-submit", function(){
       language: $("input:radio[name='lang']:checked").val(),
       userID: parseInt(sessionStorage.getItem("userID"))
     };
+    $("#new-snippet-name").val("");
+    $("#new-snippet-descrip").val("");
+    $("#new-snippet-code").val("");
+    $("input:radio[name='private'][value='true']").prop('checked',true);
+    $("input:radio[name='lang'][value='HTML']").prop('checked',true);
 
     console.log("newSnippet");
     // get the comma seperated tag value
     var tags = $("#new-snippet-tags").val().trim();
+    $("#new-snippet-tags").val("")
     //split by comma into an array
     tags = tags.split(",");
     console.log(newSnippet);
+
     //query api to create new code snippet entry
     $.post("/codes", newSnippet, function(res){
       //new code snippet id returned from query
-      var codeID = res.id;
-        console.log(codeID);
-      //loop tags array
-      for (var i = 0; i < tags.length; i++) {
-        //create object with tag and code snippet id to send in post request
-        var tag = {
-          tagname: tags[i].trim(),
-          codeID: codeID
-        };
-        //send query to create new tag entry
-        $.post("/tags", tag, function(){
-  
-        });
-      }
-    });
+      if(res)
+       {
+         renderUserSnippets(parseInt(sessionStorage.getItem("userID")));
+        var codeID = res.id;
+        //loop tags array
+        for (var i = 0; i < tags.length; i++) {
+          //create object with tag and code snippet id to send in post request
+          var tag = {
+            tagname: tags[i].trim(),
+            codeID: codeID
+          };
+          //send query to create new tag entry
+          $.ajax({
+            type: 'POST',
+            url: "/tags",
+            data: tag,
+            async:false
+          });
+        }
+      } 
+    },'json');
   });
   
   //google sign in function. Runs when a user signes up/in and when a user is already signed in
